@@ -1,0 +1,83 @@
+---
+/**
+ * The workhorse primitive. Every entry on this site — a job, a project, a
+ * skill group, a line in the chronology — is one of these.
+ *
+ * Two columns separated by a hairline rule: a mono metadata column on the
+ * left (dates, indices), content on the right. Repeating one relationship
+ * everywhere is what makes an information-dense page feel composed instead
+ * of assembled, and it means new content inherits the layout for free.
+ */
+
+interface Props {
+	/** Left-column metadata. Typically a date or date range. */
+	label: string;
+	/** Optional second line under the label, e.g. a location. */
+	sublabel?: string;
+	/** Render the top hairline. Off for the first row in a group. */
+	rule?: boolean;
+}
+
+const { label, sublabel, rule = true } = Astro.props;
+---
+
+<div class:list={['row', rule && 'row--ruled']}>
+	<div class="row__meta">
+		<span class="u-mono row__label">{label}</span>
+		{sublabel && <span class="u-label row__sublabel">{sublabel}</span>}
+	</div>
+
+	<div class="row__body">
+		<slot />
+	</div>
+</div>
+
+<style>
+	.row {
+		display: grid;
+		grid-template-columns: var(--col-label) 1fr;
+		gap: var(--grid-gap);
+		padding-block: var(--s-5);
+	}
+
+	.row--ruled {
+		border-block-start: var(--rule-hair) solid var(--rule);
+	}
+
+	.row__meta {
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-2);
+		/* Tabular figures keep date columns aligned down the page — the
+		   detail that makes a stack of rows read as a single table. */
+		font-variant-numeric: tabular-nums;
+	}
+
+	.row__label {
+		color: var(--ink-3);
+		line-height: var(--lh-snug);
+	}
+
+	.row__sublabel {
+		color: var(--ink-3);
+	}
+
+	.row__body {
+		min-width: 0; /* lets long content shrink instead of forcing overflow */
+	}
+
+	/* On narrow screens the metadata column would squeeze the content to an
+	   unreadable measure, so it stacks above instead. */
+	@media (max-width: 40rem) {
+		.row {
+			grid-template-columns: 1fr;
+			gap: var(--s-3);
+		}
+
+		.row__meta {
+			flex-direction: row;
+			align-items: baseline;
+			gap: var(--s-3);
+		}
+	}
+</style>

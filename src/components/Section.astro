@@ -1,0 +1,88 @@
+---
+/**
+ * A numbered top-level section.
+ *
+ * Opens with a heavy rule and a mono index ("01"), which is what gives the
+ * page its ledger structure and makes long-scroll content navigable without
+ * decoration. The heading sits in the content column so it aligns with every
+ * LedgerRow beneath it.
+ */
+
+interface Props {
+	/** Zero-padded index, e.g. "01". Set by the caller so order stays explicit. */
+	index: string;
+	/** Section heading. */
+	title: string;
+	/** Anchor target, also used by the nav and section index. */
+	id: string;
+	/** Optional right-aligned note, e.g. a count or status. */
+	note?: string;
+}
+
+const { index, title, id, note } = Astro.props;
+---
+
+<section class="section" id={id} aria-labelledby={`${id}-heading`}>
+	<header class="section__head">
+		<span class="u-label section__index" aria-hidden="true">{index}</span>
+		<div class="section__title-row">
+			<h2 class="section__title" id={`${id}-heading`}>{title}</h2>
+			{note && <span class="u-label section__note">{note}</span>}
+		</div>
+	</header>
+
+	<div class="section__body">
+		<slot />
+	</div>
+</section>
+
+<style>
+	.section {
+		padding-block-start: var(--space-section);
+	}
+
+	/* The heavy rule is the section's opening gesture — the one place a
+	   2px line appears. Everything below it is hairline. */
+	.section__head {
+		display: grid;
+		grid-template-columns: var(--col-label) 1fr;
+		gap: var(--grid-gap);
+		align-items: baseline;
+		padding-block-start: var(--s-4);
+		border-block-start: var(--rule-heavy) solid var(--rule-strong);
+	}
+
+	.section__index {
+		/* Nudged to sit optically level with the cap-height of the title
+		   rather than mathematically on its baseline. */
+		position: relative;
+		top: 0.15em;
+	}
+
+	.section__title-row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--s-4);
+	}
+
+	.section__title {
+		font-size: var(--fs-xl);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-tight);
+	}
+
+	.section__body {
+		padding-block-start: var(--s-6);
+	}
+
+	/* Below the label-column breakpoint the index moves above the title
+	   instead of beside it, so the content column keeps full width. */
+	@media (max-width: 40rem) {
+		.section__head {
+			grid-template-columns: 1fr;
+			gap: var(--s-3);
+		}
+	}
+</style>
