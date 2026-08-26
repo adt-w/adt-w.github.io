@@ -1,0 +1,41 @@
+---
+/**
+ * The document shell: head, fonts, global styles, skip link.
+ * Every page renders through this. Page-specific chrome (masthead, footer)
+ * arrives in later commits.
+ */
+import { Font } from 'astro:assets';
+
+import '../styles/tokens.css';
+import '../styles/base.css';
+
+interface Props {
+	/** Used verbatim as <title>. */
+	title: string;
+	/** Meta description — one sentence, no keyword stuffing. */
+	description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<title>{title}</title>
+		<meta name="description" content={description} />
+
+		{/* Emits the @font-face rules, the --font-* variables and a preload
+		    link for each family. Self-hosted, subsetted, no runtime fetch. */}
+		<Font cssVariable="--font-sans" preload />
+		<Font cssVariable="--font-mono" preload />
+	</head>
+
+	<body>
+		<a class="skip-link" href="#main">Skip to content</a>
+		<slot />
+	</body>
+</html>
