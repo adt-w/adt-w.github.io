@@ -1,0 +1,157 @@
+/* ============================================================================
+   DESIGN TOKENS
+   Single source of truth for colour, type, space, grid and motion.
+   This file declares values only — it never draws anything.
+
+   House rules for the whole site, enforced by having no token for them:
+     · no gradients          · no drop shadows
+     · no border radius      · no decorative animation
+   Hierarchy is made with type size, weight, space and hairline rules.
+   ========================================================================== */
+
+:root {
+	color-scheme: light;
+
+	/* ── Colour ────────────────────────────────────────────────────────────
+	   A near-monochrome ink-on-paper palette with exactly one accent.
+	   The accent is used for emphasis and state, never as a large fill. */
+	--paper: #fbfbf9; /* page ground — warm off-white, not pure white */
+	--paper-sunk: #f2f2ee; /* recessed blocks, hovered rows */
+	--ink: #141416; /* primary text, headings */
+	--ink-2: #55555c; /* body copy set at length */
+	--ink-3: #8a8a92; /* metadata, captions, muted labels */
+	--rule: #e0e0da; /* hairline dividers between rows */
+	--rule-strong: #141416; /* heavier rules that open a section */
+	--accent: #cc3b1e; /* vermillion */
+	--accent-ink: #ffffff; /* text on the rare accent fill */
+	--accent-sunk: #f8ece8; /* accent tint for status chips */
+
+	/* ── Type families ─────────────────────────────────────────────────────
+	   Two families doing two jobs. The grotesque (Archivo) carries content;
+	   the mono (IBM Plex Mono) carries the metadata layer — dates, tags,
+	   indices, status. That split is what makes the page read as designed
+	   rather than decorated.
+
+	   --font-sans and --font-mono are deliberately NOT declared here. They are
+	   owned by Astro's <Font> component, which emits them alongside the
+	   @font-face rules with a metric-adjusted fallback appended to prevent
+	   layout shift while the webfont loads. Declaring them here too would
+	   collide and throw that adjustment away. Families are configured in
+	   astro.config.mjs. */
+
+	/* ── Type scale ────────────────────────────────────────────────────────
+	   Deliberately gappy. Small steps in the metadata range, a large jump to
+	   display, and nothing in between competing for attention. */
+	--fs-2xs: 0.6875rem; /* 11px — mono labels, section indices */
+	--fs-xs: 0.75rem; /* 12px — mono dates, tags */
+	--fs-sm: 0.8125rem; /* 13px — captions */
+	--fs-base: 1rem; /* 16px — body */
+	--fs-md: 1.125rem; /* 18px — lead paragraphs */
+	--fs-lg: clamp(1.375rem, 1.1rem + 1.1vw, 1.875rem); /* subheads */
+	--fs-xl: clamp(1.75rem, 1.2rem + 2.4vw, 3rem); /* section titles */
+	--fs-display: clamp(2.75rem, 1rem + 8.4vw, 7rem); /* masthead only */
+
+	/* ── Line height & tracking ────────────────────────────────────────────
+	   Large type gets tighter leading and negative tracking; small mono type
+	   gets opened up. Both are what stop web type looking like a default. */
+	--lh-display: 0.92;
+	--lh-tight: 1.12;
+	--lh-snug: 1.35;
+	--lh-body: 1.6;
+	--tr-display: -0.035em;
+	--tr-tight: -0.02em;
+	--tr-normal: 0;
+	--tr-mono: 0.02em;
+	--tr-label: 0.12em; /* uppercase mono labels */
+
+	/* ── Weight ────────────────────────────────────────────────────────────*/
+	--fw-regular: 400;
+	--fw-medium: 500;
+	--fw-semibold: 600;
+	--fw-bold: 700;
+
+	/* ── Space ─────────────────────────────────────────────────────────────
+	   4px base. Referenced by step, never by raw pixel value. */
+	--s-1: 0.25rem; /*  4px */
+	--s-2: 0.5rem; /*  8px */
+	--s-3: 0.75rem; /* 12px */
+	--s-4: 1rem; /* 16px */
+	--s-5: 1.5rem; /* 24px */
+	--s-6: 2rem; /* 32px */
+	--s-7: 3rem; /* 48px */
+	--s-8: 4rem; /* 64px */
+	--s-9: 6rem; /* 96px */
+	--s-10: 8rem; /* 128px */
+
+	/* Vertical rhythm between major sections, fluid with viewport. */
+	--space-section: clamp(3.5rem, 1.5rem + 7vw, 7.5rem);
+
+	/* ── Grid & measure ────────────────────────────────────────────────────*/
+	--page-max: 1440px;
+	--page-pad: clamp(1.25rem, 0.5rem + 3vw, 4rem);
+	--grid-gap: clamp(1rem, 0.5rem + 1.6vw, 2rem);
+
+	/* Width of the left metadata column in a ledger row. The whole page is
+	   built from this two-column relationship, so it lives here. */
+	--col-label: clamp(5rem, 3rem + 9vw, 11.5rem);
+
+	/* Comfortable reading measures — roughly 60 and 75 characters. */
+	--measure: 34rem;
+	--measure-wide: 46rem;
+
+	/* ── Rules ─────────────────────────────────────────────────────────────*/
+	--rule-hair: 1px;
+	--rule-heavy: 2px;
+
+	/* ── Motion ────────────────────────────────────────────────────────────
+	   Interface feedback only: hover, focus, disclosure. Nothing enters the
+	   viewport with a flourish. */
+	--ease: cubic-bezier(0.2, 0, 0, 1);
+	--dur-fast: 120ms;
+	--dur-base: 200ms;
+
+	/* ── Focus ─────────────────────────────────────────────────────────────*/
+	--focus-ring: var(--accent);
+	--focus-width: 2px;
+	--focus-offset: 3px;
+}
+
+/* ── Dark theme ─────────────────────────────────────────────────────────────
+   Only the colour tokens are redeclared; type, space and grid are invariant.
+   Declared twice so that the system preference and an explicit user choice
+   both resolve correctly:
+     · the media query handles the default "system" state
+     · the attribute selector lets a manual toggle win in either direction
+   The `:not([data-theme='light'])` guard keeps an explicit light choice from
+   being overridden by a dark system preference. */
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme='light']) {
+		color-scheme: dark;
+
+		--paper: #0f0f11;
+		--paper-sunk: #17171a;
+		--ink: #f0f0ec;
+		--ink-2: #a3a3ab;
+		--ink-3: #6e6e76;
+		--rule: #27272b;
+		--rule-strong: #f0f0ec;
+		--accent: #ff5c3d;
+		--accent-ink: #0f0f11;
+		--accent-sunk: #2a1611;
+	}
+}
+
+:root[data-theme='dark'] {
+	color-scheme: dark;
+
+	--paper: #0f0f11;
+	--paper-sunk: #17171a;
+	--ink: #f0f0ec;
+	--ink-2: #a3a3ab;
+	--ink-3: #6e6e76;
+	--rule: #27272b;
+	--rule-strong: #f0f0ec;
+	--accent: #ff5c3d;
+	--accent-ink: #0f0f11;
+	--accent-sunk: #2a1611;
+}
