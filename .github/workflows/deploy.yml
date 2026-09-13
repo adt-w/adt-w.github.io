@@ -1,0 +1,46 @@
+# Build the site and publish it to GitHub Pages on every push to main.
+#
+# Nothing here needs a secret or a token you have to create: GitHub Pages
+# authenticates through the `id-token` permission below.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Lets you re-run a deploy from the Actions tab without pushing a commit.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish rather than cancelling it — a half-published
+# site is worse than a slightly stale one.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # Installs dependencies, runs `astro build`, and uploads dist/ as the
+      # Pages artifact. Fonts are fetched from Google at build time here, so
+      # the published site serves them from your own origin.
+      - name: Build
+        uses: withastro/action@v6
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5

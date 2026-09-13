@@ -10,36 +10,71 @@ npm install
 npm run dev        # http://localhost:4321, hot reload
 ```
 
-## Sharing it publicly
+## Publishing it permanently (GitHub Pages)
 
-The site is **not deployed**. It is served from this machine, and Cloudflare
-forwards a public hostname to it through an outbound tunnel:
+Free, always on, and independent of whether this Mac is awake. Do these once.
+
+**1. Rename the repository.** On GitHub: *Settings → General → Repository name*,
+change `Aditya.io` to **`adt-w.github.io`**, then rename your local remote:
+
+```bash
+git remote set-url origin https://github.com/adt-w/adt-w.github.io.git
+```
+
+GitHub serves a repo named `<user>.github.io` at the domain root, so the site
+lands on **https://adt-w.github.io** rather than a `/Aditya.io/` subpath.
+
+> Prefer to keep the name `Aditya.io`? Skip the rename and set
+> `base: '/Aditya.io'` in `astro.config.mjs`. Everything still works — all
+> internal links resolve through `src/lib/url.ts` — but the URL becomes
+> `https://adt-w.github.io/Aditya.io/`.
+
+**2. Commit the lockfile.** The build runs `npm ci`, which requires it:
+
+```bash
+git add package-lock.json && git commit -m "Add lockfile"
+```
+
+**3. Push everything, including the workflow** in `.github/workflows/deploy.yml`.
+
+**4. Turn Pages on.** GitHub: *Settings → Pages → Build and deployment →
+Source*, choose **GitHub Actions**. Not "Deploy from a branch".
+
+**5. Push to `main`.** The workflow builds and publishes; watch it in the
+*Actions* tab. First run takes about a minute. After that every push to `main`
+republishes automatically.
+
+### Using a real domain later
+
+`aditya.io` is **not free** — `.io` runs roughly $35-70/year. A `.dev` or
+`.com` is about $12-15/year. Once you own one:
+
+1. Add a `public/CNAME` file containing just the domain, e.g. `aditya.dev`
+2. Point the domain's DNS at GitHub — four `A` records for the apex
+   (`185.199.108.153`, `.109.153`, `.110.153`, `.111.153`), or a `CNAME` to
+   `adt-w.github.io` for a `www` subdomain
+3. Set it under *Settings → Pages → Custom domain* and tick **Enforce HTTPS**
+4. Update `site:` in `astro.config.mjs` to the new origin
+
+A free alternative that looks like a real domain: **is-a.dev** grants
+developers a subdomain such as `aditya.is-a.dev` by pull request to their
+public registry, at no cost.
+
+## Sharing it from this machine (temporary)
+
+Useful before the site is published, or to show work in progress:
 
 ```bash
 npm run share
 ```
 
-This builds the site, serves it on `localhost:4321`, opens the tunnel, and
-prints three addresses:
+This builds, serves on `localhost:4321`, opens a Cloudflare tunnel, and prints
+a public `*.trycloudflare.com` URL alongside the local and LAN addresses.
 
-| | |
-|---|---|
-| `PUBLIC` | a `*.trycloudflare.com` URL that works for anyone, anywhere |
-| `LOCAL` | this machine only |
-| `NETWORK` | other devices on the same Wi-Fi |
-
-**The public URL only lives as long as the command runs.** It dies on Ctrl-C,
-on closing the terminal, when the Mac sleeps, or when the network drops. Each
-run is issued a different URL, so the link is not durable — send it when
-someone is ready to look, not on a resume. For a permanent address the site
-needs real hosting; the build output in `dist/` is plain static files and will
-work on any static host.
-
-Requires `cloudflared`:
-
-```bash
-brew install cloudflared
-```
+**That URL is disposable.** It dies on Ctrl-C, on closing the terminal, when
+the Mac sleeps, and when the network drops — and each run is issued a different
+one. Send it when someone is ready to look; never put it on a resume. Requires
+`cloudflared` (`brew install cloudflared`).
 
 ## Adding content
 

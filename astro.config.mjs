@@ -1,10 +1,20 @@
 // @ts-check
 import { defineConfig, fontProviders } from 'astro/config';
 
-// TODO(commit 9): set `site` to the real origin once hosting is chosen.
-// It is required for canonical URLs, Open Graph tags and the sitemap.
-
 export default defineConfig({
+	// The public origin. Required for canonical URLs and Open Graph tags.
+	// Change this if you move to a custom domain.
+	site: 'https://adt-w.github.io',
+
+	// Subpath the site is served from.
+	//
+	// '/' is correct when the repository is named `adt-w.github.io`, which
+	// GitHub serves at the domain root. If the repository keeps another name
+	// (for example `Aditya.io`), GitHub serves it at `/<repo-name>/` instead —
+	// set base to '/Aditya.io' and every internal link follows automatically,
+	// because they are all built through src/lib/url.ts.
+	base: '/',
+
 	// The site runs locally and is shared through a tunnel rather than being
 	// deployed, so the server must accept connections from outside this machine.
 	server: {
