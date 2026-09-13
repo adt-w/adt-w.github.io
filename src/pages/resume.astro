@@ -1,0 +1,194 @@
+---
+/**
+ * The resume, as a page of its own.
+ *
+ * The PDF is the canonical document — it is what gets attached to an
+ * application — so it is embedded directly rather than transcribed into HTML,
+ * which would create a second copy to keep in sync with the first.
+ *
+ * Embedded PDFs are unreliable on mobile and in some browsers, so the frame
+ * carries a real fallback rather than assuming it renders.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Section from '../components/Section.astro';
+import { site } from '../data/site';
+import { url } from '../lib/url';
+
+const FILE = url('/aditya-wadhwa-resume.pdf');
+
+/** Shown beside the download so the size is not a surprise on mobile data. */
+const SIZE = '106 KB';
+const UPDATED = 'September 2026';
+---
+
+<BaseLayout
+	title={`Resume — ${site.name}`}
+	description="Resume of Aditya Wadhwa — Management Engineering at the University of Waterloo."
+>
+	<div class="resume">
+		<header class="resume__head">
+			<h1 class="resume__title">Resume</h1>
+
+			<div class="resume__meta">
+				<div class="resume__field">
+					<span class="u-label">Updated</span>
+					<span class="u-mono">{UPDATED}</span>
+				</div>
+				<div class="resume__field">
+					<span class="u-label">Format</span>
+					<span class="u-mono">PDF · {SIZE}</span>
+				</div>
+			</div>
+
+			<div class="resume__actions">
+				<a class="resume__action resume__action--primary" href={FILE} download>
+					Download PDF
+					<span aria-hidden="true">↓</span>
+				</a>
+				<a class="resume__action" href={FILE} target="_blank" rel="noopener">
+					Open in new tab
+					<span aria-hidden="true">↗</span>
+				</a>
+			</div>
+		</header>
+
+		<div class="resume__frame">
+			<object class="resume__object" data={FILE} type="application/pdf">
+				{/* Reached when the browser cannot render a PDF inline — which is
+				    most mobile browsers. */}
+				<div class="resume__fallback">
+					<p class="resume__fallback-text">
+						Your browser cannot display the PDF inline.
+					</p>
+					<a class="resume__action resume__action--primary" href={FILE} download>
+						Download PDF
+						<span aria-hidden="true">↓</span>
+					</a>
+				</div>
+			</object>
+		</div>
+
+		<Section index="—" title="Elsewhere" id="resume-elsewhere">
+			<p class="resume__note u-measure-wide">
+				The <a href={url('/#projects')}>projects section</a> carries more than the
+				resume has room for — measured results, what did not work, and links
+				to the source. The <a href={url('/#chronology')}>chronology</a> shows how the
+				work overlaps.
+			</p>
+		</Section>
+	</div>
+</BaseLayout>
+
+<style>
+	.resume__head {
+		padding-block-start: clamp(2.5rem, 1rem + 6vw, 5rem);
+	}
+
+	.resume__title {
+		font-size: var(--fs-xl);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-tight);
+	}
+
+	.resume__meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--s-5) var(--s-7);
+		margin-block-start: var(--s-5);
+		padding-block-start: var(--s-4);
+		border-block-start: var(--rule-heavy) solid var(--rule-strong);
+	}
+
+	.resume__field {
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-2);
+	}
+
+	.resume__field .u-mono {
+		color: var(--ink);
+	}
+
+	.resume__actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--s-4);
+		margin-block-start: var(--s-6);
+	}
+
+	/* Actions are ruled boxes rather than filled buttons — the site has no
+	   other filled surfaces, and adding one here would read as imported. */
+	.resume__action {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--s-2);
+		padding: var(--s-3) var(--s-5);
+		border: var(--rule-hair) solid var(--rule);
+		font-family: var(--font-mono);
+		font-size: var(--fs-2xs);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-label);
+		text-transform: uppercase;
+		text-decoration: none;
+		color: var(--ink-2);
+		transition:
+			color var(--dur-fast) var(--ease),
+			border-color var(--dur-fast) var(--ease);
+	}
+
+	.resume__action:hover {
+		color: var(--ink);
+		border-color: var(--ink);
+	}
+
+	.resume__action--primary {
+		color: var(--ink);
+		border-color: var(--ink);
+	}
+
+	.resume__action--primary:hover {
+		color: var(--accent);
+		border-color: var(--accent);
+	}
+
+	/* ── Embedded document ─────────────────────────────────────────────────*/
+	.resume__frame {
+		margin-block-start: var(--s-7);
+		border: var(--rule-hair) solid var(--rule);
+		background-color: var(--paper-sunk);
+	}
+
+	.resume__object {
+		display: block;
+		width: 100%;
+		/* Roughly the proportions of a page of letter paper, capped so the
+		   document never grows taller than the window it is read in. */
+		height: min(140vh, 1100px);
+		border: 0;
+	}
+
+	.resume__fallback {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--s-5);
+		padding: var(--s-7) var(--s-5);
+	}
+
+	.resume__fallback-text {
+		color: var(--ink-2);
+	}
+
+	.resume__note {
+		color: var(--ink-2);
+	}
+
+	/* An embedded PDF is close to unusable at phone width; the actions above
+	   are the real path, so the frame shrinks out of the way rather than
+	   dominating the screen. */
+	@media (max-width: 48rem) {
+		.resume__object {
+			height: 60vh;
+		}
+	}
+</style>
