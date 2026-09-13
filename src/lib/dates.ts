@@ -50,6 +50,49 @@ export function formatMonthAbbr(ym: string): string {
 	return MONTHS[month - 1]!.slice(0, 3);
 }
 
+/** "2026-09" -> "Sep 2026". The chronology's primary date form. */
+export function formatShort(ym: string): string {
+	const { year, month } = parts(ym);
+	return `${MONTHS[month - 1]!.slice(0, 3)} ${year}`;
+}
+
+/**
+ * "Sep 2026 -> Present". Carries the year on both ends so a row means the
+ * same thing read on its own as it does read under its year heading.
+ */
+export function formatShortRange(start: string, end: string | null): string {
+	if (end === null) return `${formatShort(start)} \u2192 Present`;
+	// A thing that began and ended in the same month is a point, not a span.
+	if (end === start) return formatShort(start);
+	return `${formatShort(start)} \u2192 ${formatShort(end)}`;
+}
+
+/**
+ * Whole months spanned, counting both endpoints, so a project that ran only
+ * through January reads as one month rather than zero. An open-ended entry is
+ * measured to today, which is why this is computed at build time.
+ */
+export function durationMonths(start: string, end: string | null): number {
+	const from = parts(start);
+	const now = new Date();
+	const to = end
+		? parts(end)
+		: { year: now.getFullYear(), month: now.getMonth() + 1 };
+	return Math.max(1, (to.year - from.year) * 12 + (to.month - from.month) + 1);
+}
+
+/** "3 mos", "1 yr", "2 yrs 4 mos". Abbreviated to sit in a metadata column. */
+export function formatDuration(start: string, end: string | null): string {
+	const total = durationMonths(start, end);
+	const years = Math.floor(total / 12);
+	const months = total % 12;
+
+	const parts_: string[] = [];
+	if (years > 0) parts_.push(`${years} ${years === 1 ? 'yr' : 'yrs'}`);
+	if (months > 0) parts_.push(`${months} ${months === 1 ? 'mo' : 'mos'}`);
+	return parts_.join(' ');
+}
+
 /** "2026-05" -> "2026" */
 export function yearOf(ym: string): string {
 	return ym.slice(0, 4);

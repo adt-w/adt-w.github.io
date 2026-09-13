@@ -12,7 +12,7 @@
  * stays dense enough to read at a glance.
  */
 import { getCollection } from 'astro:content';
-import { byNewest, yearOf, formatMonthAbbr } from '../lib/dates';
+import { byNewest, yearOf, formatShortRange, formatDuration } from '../lib/dates';
 
 type EventType = 'work' | 'project' | 'education';
 
@@ -97,6 +97,8 @@ const TYPE_LABEL: Record<EventType, string> = {
 		}
 	</div>
 
+	<p class="u-label chrono__caption">Newest first</p>
+
 	<div class="chrono__ledger">
 		{
 			years.map((group) => (
@@ -107,7 +109,10 @@ const TYPE_LABEL: Record<EventType, string> = {
 						{group.events.map((event) => (
 							<li class="chrono__entry" data-type={event.type}>
 								<a class="chrono__link" href={event.href}>
-									<span class="chrono__month">{formatMonthAbbr(event.start)}</span>
+									<span class="chrono__when">
+										<span class="chrono__span">{formatShortRange(event.start, event.end)}</span>
+										<span class="chrono__duration">{formatDuration(event.start, event.end)}</span>
+									</span>
 
 									<span class="chrono__content">
 										<span class="chrono__title">
@@ -199,9 +204,9 @@ const TYPE_LABEL: Record<EventType, string> = {
 	/* ── Entry row ─────────────────────────────────────────────────────────*/
 	.chrono__link {
 		display: grid;
-		grid-template-columns: 2.75rem 1fr auto;
+		grid-template-columns: clamp(7.5rem, 15vw, 9.5rem) 1fr auto;
 		gap: var(--s-4);
-		align-items: baseline;
+		align-items: start;
 		/* Bleeds into the gutter by its own padding, so the hover surface is
 		   wider than the text and the whole row reads as one control. Doing it
 		   with margin and padding rather than a spread box-shadow means the
@@ -220,15 +225,36 @@ const TYPE_LABEL: Record<EventType, string> = {
 		border-block-start: var(--rule-hair) solid var(--rule);
 	}
 
-	/* Set as a label rather than a figure: under a year heading these are
-	   dates, and digits alone were reading as row numbers. */
-	.chrono__month {
+	/* Each row states its own full span. A bare "SEP" only meant anything in
+	   the context of the heading above it, which made rows unreadable once
+	   the list was filtered or scanned out of order. */
+	.chrono__when {
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-1);
+	}
+
+	.chrono__span {
+		font-family: var(--font-mono);
+		font-size: var(--fs-xs);
+		letter-spacing: var(--tr-mono);
+		font-variant-numeric: tabular-nums;
+		color: var(--ink-2);
+		white-space: nowrap;
+	}
+
+	/* How long a thing ran is the question a date range raises and does not
+	   answer, so it is stated rather than left to arithmetic. */
+	.chrono__duration {
 		font-family: var(--font-mono);
 		font-size: var(--fs-2xs);
-		font-weight: var(--fw-medium);
 		letter-spacing: var(--tr-label);
 		text-transform: uppercase;
 		color: var(--ink-3);
+	}
+
+	.chrono__caption {
+		margin-block-end: var(--s-4);
 	}
 
 	.chrono__content {
@@ -286,7 +312,7 @@ const TYPE_LABEL: Record<EventType, string> = {
 		}
 
 		.chrono__link {
-			grid-template-columns: 2.75rem 1fr;
+			grid-template-columns: 1fr;
 		}
 
 		/* The type label moves under the title rather than competing with it
