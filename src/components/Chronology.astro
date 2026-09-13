@@ -125,6 +125,16 @@ const TYPE_LABEL: Record<EventType, string> = {
 									</span>
 
 									<span class="u-label chrono__type">{TYPE_LABEL[event.type]}</span>
+
+									{/* Revealed on hover. The row truncates its detail to one line to
+									    stay scannable; this shows the rest without making the reader
+									    commit to a jump first. Decorative only — every word in it is
+									    already on the page in the entry this row links to. */}
+									<span class="chrono__card" aria-hidden="true">
+										<span class="chrono__card-title">{event.title}</span>
+										<span class="chrono__card-detail">{event.detail}</span>
+										<span class="chrono__card-cue">Jump to entry &darr;</span>
+									</span>
 								</a>
 							</li>
 						))}
@@ -199,6 +209,10 @@ const TYPE_LABEL: Record<EventType, string> = {
 
 	.chrono__entry[hidden] {
 		display: none;
+	}
+
+	.chrono__entry {
+		position: relative;
 	}
 
 	/* ── Entry row ─────────────────────────────────────────────────────────*/
@@ -303,6 +317,77 @@ const TYPE_LABEL: Record<EventType, string> = {
 		padding-block: var(--s-6);
 		border-block-start: var(--rule-hair) solid var(--rule);
 		color: var(--ink-3);
+	}
+
+	/* ── Hover card ────────────────────────────────────────────────────────
+	   Only where a pointer can actually hover. On touch there is no hover
+	   state to enter or leave, so the card would either never appear or
+	   appear stuck after a tap. */
+	@media (hover: hover) and (pointer: fine) {
+		.chrono__card {
+			position: absolute;
+			z-index: 20;
+			top: calc(100% - var(--s-2));
+			inset-inline-start: 0;
+			display: flex;
+			flex-direction: column;
+			gap: var(--s-2);
+			width: min(30rem, 100%);
+			padding: var(--s-4);
+			background-color: var(--paper);
+			/* A hairline rather than a shadow, matching everything else here.
+			   The solid ground is what separates it from the rows beneath. */
+			border: var(--rule-hair) solid var(--ink);
+			opacity: 0;
+			visibility: hidden;
+			transform: translateY(-2px);
+			/* Never intercepts the pointer, so moving toward the card cannot
+			   trap focus or flicker the row's own hover state. */
+			pointer-events: none;
+			transition:
+				opacity var(--dur-fast) var(--ease),
+				visibility var(--dur-fast) var(--ease),
+				transform var(--dur-fast) var(--ease);
+		}
+
+		.chrono__link:hover .chrono__card,
+		.chrono__link:focus-visible .chrono__card {
+			opacity: 1;
+			visibility: visible;
+			transform: translateY(0);
+		}
+
+		.chrono__card-title {
+			font-size: var(--fs-base);
+			font-weight: var(--fw-medium);
+			letter-spacing: var(--tr-tight);
+			color: var(--ink);
+		}
+
+		.chrono__card-detail {
+			font-size: var(--fs-sm);
+			line-height: var(--lh-snug);
+			color: var(--ink-2);
+			text-wrap: pretty;
+		}
+
+		.chrono__card-cue {
+			margin-block-start: var(--s-1);
+			font-family: var(--font-mono);
+			font-size: var(--fs-2xs);
+			font-weight: var(--fw-medium);
+			letter-spacing: var(--tr-label);
+			text-transform: uppercase;
+			color: var(--ink-3);
+		}
+	}
+
+	/* Without a hover state the card is unreachable, so it is removed from
+	   the document rather than left invisible in it. */
+	@media not all and (hover: hover) {
+		.chrono__card {
+			display: none;
+		}
 	}
 
 	@media (max-width: 40rem) {
