@@ -1,0 +1,58 @@
+---
+/**
+ * Achievement bullets, shared by experience and project entries.
+ *
+ * Markers are small squares rather than discs — the same square used by the
+ * status chip and the ongoing marker, so one shape carries "item" across the
+ * whole site. Hanging indent keeps the text block flush left.
+ */
+
+import { inlineCode } from '../lib/inline';
+
+interface Props {
+	items: readonly string[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="highlights">
+	{items.map((item) => <li class="highlights__item" set:html={inlineCode(item)} />)}
+</ul>
+
+<style>
+	.highlights {
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-3);
+		margin-block-start: var(--s-5);
+		max-width: var(--measure-wide);
+	}
+
+	.highlights__item {
+		position: relative;
+		padding-inline-start: var(--s-5);
+		color: var(--ink-2);
+	}
+
+	.highlights__item::before {
+		content: '';
+		position: absolute;
+		/* Aligned to the optical centre of the first line rather than its top,
+		   so the marker sits with the text at any wrapped length. */
+		top: calc(var(--lh-body) * 0.5em);
+		inset-inline-start: 0;
+		width: 0.3125rem;
+		height: 0.3125rem;
+		transform: translateY(-50%);
+		background-color: var(--ink-3);
+	}
+
+	/* Inline code in a highlight — used for field and variable names. */
+	.highlights__item :global(code) {
+		font-family: var(--font-mono);
+		font-size: 0.875em;
+		letter-spacing: var(--tr-mono);
+		color: var(--ink);
+	}
+</style>

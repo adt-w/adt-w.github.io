@@ -1,0 +1,58 @@
+---
+/**
+ * One role. Rendered as a ledger row: dates and location in the metadata
+ * column, everything else in the content column.
+ */
+import type { CollectionEntry } from 'astro:content';
+
+import LedgerRow from './LedgerRow.astro';
+import TagList from './TagList.astro';
+import HighlightList from './HighlightList.astro';
+import { formatRange, formatRangeLong } from '../lib/dates';
+
+interface Props {
+	entry: CollectionEntry<'experience'>;
+	/** Suppress the top hairline for the first row in the section. */
+	first?: boolean;
+}
+
+const { entry, first = false } = Astro.props;
+const { org, role, location, start, end, tags, highlights } = entry.data;
+---
+
+<LedgerRow
+	label={formatRange(start, end)}
+	sublabel={location}
+	rule={!first}
+	id={`exp-${entry.id}`}
+>
+	<div class="entry">
+		<h3 class="entry__org">{org}</h3>
+		<p class="entry__role">{role}</p>
+
+		{/* The numeric range is compact but hard to read aloud, so the prose
+		    form is exposed to screen readers only. */}
+		<span class="visually-hidden">{formatRangeLong(start, end)}</span>
+
+		{tags.length > 0 && <div class="entry__tags"><TagList items={tags} /></div>}
+
+		<HighlightList items={highlights} />
+	</div>
+</LedgerRow>
+
+<style>
+	.entry__org {
+		font-size: var(--fs-lg);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-tight);
+	}
+
+	.entry__role {
+		margin-block-start: var(--s-1);
+		color: var(--ink-2);
+	}
+
+	.entry__tags {
+		margin-block-start: var(--s-4);
+	}
+</style>

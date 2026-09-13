@@ -1,0 +1,45 @@
+---
+/**
+ * One credential. Structurally identical to an experience entry, kept
+ * separate because the fields differ and conflating them would mean a
+ * schema that is half-empty for both.
+ */
+import type { CollectionEntry } from 'astro:content';
+
+import LedgerRow from './LedgerRow.astro';
+import HighlightList from './HighlightList.astro';
+import { formatRange, formatRangeLong } from '../lib/dates';
+
+interface Props {
+	entry: CollectionEntry<'education'>;
+	first?: boolean;
+}
+
+const { entry, first = false } = Astro.props;
+const { institution, credential, location, start, end, detail } = entry.data;
+---
+
+<LedgerRow
+	label={formatRange(start, end)}
+	sublabel={location}
+	rule={!first}
+	id={`edu-${entry.id}`}
+>
+	<h3 class="edu__institution">{institution}</h3>
+	<p class="edu__credential">{credential}</p>
+	<span class="visually-hidden">{formatRangeLong(start, end)}</span>
+	{detail.length > 0 && <HighlightList items={detail} />}
+</LedgerRow>
+
+<style>
+	.edu__institution {
+		font-size: var(--fs-lg);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-tight);
+	}
+
+	.edu__credential {
+		margin-block-start: var(--s-1);
+		color: var(--ink-2);
+	}
+</style>

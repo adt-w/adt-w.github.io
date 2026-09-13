@@ -1,18 +1,19 @@
 ---
 /**
- * The document shell: head, fonts, global styles, skip link.
- * Every page renders through this. Page-specific chrome (masthead, footer)
- * arrives in later commits.
+ * The document shell: head, fonts, global styles, masthead, footer.
  */
 import { Font } from 'astro:assets';
 
+import Masthead from '../components/Masthead.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import ScrollSpy from '../components/ScrollSpy.astro';
+
 import '../styles/tokens.css';
 import '../styles/base.css';
+import '../styles/print.css';
 
 interface Props {
-	/** Used verbatim as <title>. */
 	title: string;
-	/** Meta description — one sentence, no keyword stuffing. */
 	description: string;
 }
 
@@ -28,14 +29,44 @@ const { title, description } = Astro.props;
 		<title>{title}</title>
 		<meta name="description" content={description} />
 
-		{/* Emits the @font-face rules, the --font-* variables and a preload
-		    link for each family. Self-hosted, subsetted, no runtime fetch. */}
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta name="twitter:card" content="summary" />
+
+		{/* Matches the browser chrome to the page ground in both themes. */}
+		<meta name="theme-color" content="#fbfbf9" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#0f0f11" media="(prefers-color-scheme: dark)" />
+
+		{/* Emits @font-face rules, the --font-* variables and preload links.
+		    Self-hosted and subsetted — no third-party request at runtime. */}
 		<Font cssVariable="--font-sans" preload />
 		<Font cssVariable="--font-mono" preload />
+
+		{/* Runs before first paint so a saved dark choice never flashes light.
+		    Inline and synchronous on purpose: deferring it is the flash. */}
+		<script is:inline>
+			try {
+				const saved = localStorage.getItem('theme');
+				if (saved === 'light' || saved === 'dark') {
+					document.documentElement.dataset.theme = saved;
+				}
+			} catch {
+				/* Storage blocked — fall through to the system preference. */
+			}
+		</script>
 	</head>
 
 	<body>
 		<a class="skip-link" href="#main">Skip to content</a>
-		<slot />
+
+		<Masthead />
+
+		<main id="main" class="page">
+			<slot />
+		</main>
+
+		<SiteFooter />
+		<ScrollSpy />
 	</body>
 </html>

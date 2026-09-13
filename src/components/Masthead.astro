@@ -1,0 +1,244 @@
+---
+/**
+ * Sticky masthead: name, section nav, resume tab, theme toggle.
+ *
+ * Two kinds of destination sit here and they are separated by a rule rather
+ * than mixed into one list. The section links move you within the page; the
+ * resume tab leaves it. Collapsing both into one row of identical links would
+ * hide that difference.
+ *
+ * Deliberately thin and ruled — no shadow, no blur, no shrink-on-scroll.
+ */
+
+import { url, isCurrent } from '../lib/url';
+
+/** Rooted at "/" so the same links work from the resume page. */
+const SECTIONS = [
+	{ href: url('/#summary'), id: 'summary', label: 'Summary' },
+	{ href: url('/#chronology'), id: 'chronology', label: 'Chronology' },
+	{ href: url('/#experience'), id: 'experience', label: 'Experience' },
+	{ href: url('/#projects'), id: 'projects', label: 'Projects' },
+	{ href: url('/#skills'), id: 'skills', label: 'Skills' },
+	{ href: url('/#contact'), id: 'contact', label: 'Contact' },
+];
+
+const onResume = isCurrent(Astro.url.pathname, '/resume');
+---
+
+<header class="masthead">
+	<div class="page masthead__inner">
+		<a class="masthead__name" href={url('/')}>Aditya Wadhwa</a>
+
+		<nav class="masthead__nav" aria-label="Sections">
+			<ul class="masthead__list">
+				{
+					SECTIONS.map((item) => (
+						<li>
+							<a class="masthead__link" href={item.href} data-section={item.id}>
+								{item.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+
+		<div class="masthead__end">
+			<a
+				class="masthead__link masthead__resume"
+				href={url('/resume')}
+				aria-current={onResume ? 'page' : undefined}
+			>
+				Resume
+			</a>
+
+			<button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
+				<span class="theme-toggle__swatch" aria-hidden="true"></span>
+				<span class="visually-hidden">Toggle dark theme</span>
+			</button>
+		</div>
+	</div>
+</header>
+
+<style>
+	.masthead {
+		position: sticky;
+		top: 0;
+		z-index: 50;
+		background-color: var(--paper);
+		border-block-end: var(--rule-hair) solid var(--rule);
+	}
+
+	.masthead__inner {
+		display: flex;
+		align-items: center;
+		gap: var(--s-5);
+		height: var(--masthead-h);
+	}
+
+	.masthead__name {
+		flex-shrink: 0;
+		font-size: var(--fs-sm);
+		font-weight: var(--fw-semibold);
+		letter-spacing: var(--tr-tight);
+		text-decoration: none;
+		white-space: nowrap;
+	}
+
+	.masthead__nav {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.masthead__list {
+		display: flex;
+		gap: var(--s-5);
+		/* Scrolls sideways on narrow screens rather than collapsing into a
+		   menu — fewer moving parts, and nothing is hidden behind a tap. */
+		overflow-x: auto;
+		scrollbar-width: none;
+		/* Stops a sideways flick from rubber-banding the whole page. */
+		overscroll-behavior-inline: contain;
+	}
+
+	.masthead__list::-webkit-scrollbar {
+		display: none;
+	}
+
+	.masthead__link {
+		display: block;
+		padding-block: var(--s-2);
+		font-family: var(--font-mono);
+		font-size: var(--fs-2xs);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-label);
+		text-transform: uppercase;
+		text-decoration: none;
+		color: var(--ink-3);
+		white-space: nowrap;
+		transition: color var(--dur-fast) var(--ease);
+	}
+
+	.masthead__link:hover {
+		color: var(--ink);
+	}
+
+	/* Set by ScrollSpy for the section in view, and by the server for the
+	   current page. Both resolve to the same visual state. */
+	.masthead__link[aria-current] {
+		color: var(--ink);
+	}
+
+	/* ── End cluster ───────────────────────────────────────────────────────
+	   The resume leaves the page, so it is fenced off from the section links
+	   by a rule instead of sitting in the same list. */
+	.masthead__end {
+		display: flex;
+		align-items: center;
+		gap: var(--s-4);
+		flex-shrink: 0;
+		padding-inline-start: var(--s-5);
+		border-inline-start: var(--rule-hair) solid var(--rule);
+	}
+
+	.masthead__resume[aria-current='page'] {
+		color: var(--accent);
+	}
+
+	/* ── Theme toggle ──────────────────────────────────────────────────────
+	   A square, half filled. No icon set, no emoji — it reads as a swatch,
+	   which is what it is. */
+	.theme-toggle {
+		display: grid;
+		place-items: center;
+		flex-shrink: 0;
+		width: 1.75rem;
+		height: 1.75rem;
+		padding: 0;
+		background: none;
+		border: 0;
+		cursor: pointer;
+	}
+
+	.theme-toggle__swatch {
+		position: relative;
+		width: 0.875rem;
+		height: 0.875rem;
+		overflow: hidden;
+		box-shadow: inset 0 0 0 1px var(--ink-3);
+		transition: box-shadow var(--dur-fast) var(--ease);
+	}
+
+	.theme-toggle__swatch::after {
+		content: '';
+		position: absolute;
+		inset: 0 50% 0 0;
+		background-color: var(--ink-3);
+		transition: background-color var(--dur-fast) var(--ease);
+	}
+
+	.theme-toggle:hover .theme-toggle__swatch,
+	.theme-toggle:focus-visible .theme-toggle__swatch {
+		box-shadow: inset 0 0 0 1px var(--ink);
+	}
+
+	.theme-toggle:hover .theme-toggle__swatch::after,
+	.theme-toggle:focus-visible .theme-toggle__swatch::after {
+		background-color: var(--ink);
+	}
+
+	@media (max-width: 48rem) {
+		.masthead__inner {
+			gap: var(--s-4);
+		}
+
+		.masthead__list {
+			gap: var(--s-4);
+		}
+
+		.masthead__end {
+			gap: var(--s-3);
+			padding-inline-start: var(--s-4);
+		}
+	}
+
+	/* Below this the name and six section links cannot share a row legibly,
+	   so the name gives up its place and the nav takes the full width. */
+	@media (max-width: 34rem) {
+		.masthead__name {
+			display: none;
+		}
+	}
+</style>
+
+<script>
+	/**
+	 * Theme toggle. The initial theme is resolved by an inline script in
+	 * BaseLayout before first paint; this only handles user clicks.
+	 */
+	const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+	const root = document.documentElement;
+
+	function currentTheme(): 'light' | 'dark' {
+		const explicit = root.dataset.theme;
+		if (explicit === 'light' || explicit === 'dark') return explicit;
+		return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+	}
+
+	function sync() {
+		button?.setAttribute('aria-pressed', String(currentTheme() === 'dark'));
+	}
+
+	button?.addEventListener('click', () => {
+		const next = currentTheme() === 'dark' ? 'light' : 'dark';
+		root.dataset.theme = next;
+		try {
+			localStorage.setItem('theme', next);
+		} catch {
+			// Private browsing or blocked storage: the choice simply won't persist.
+		}
+		sync();
+	});
+
+	sync();
+</script>

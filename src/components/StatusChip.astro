@@ -1,0 +1,68 @@
+---
+/**
+ * Project status marker.
+ *
+ * A small filled square plus a mono label. The square is the only place a
+ * solid block of colour appears on the site, which is what makes an active
+ * project findable in a long scroll without any animation.
+ */
+
+type Status = 'active' | 'early' | 'complete';
+
+interface Props {
+	status: Status;
+}
+
+const { status } = Astro.props;
+
+const COPY: Record<Status, string> = {
+	active: 'In progress',
+	early: 'Early stage',
+	complete: 'Complete',
+};
+---
+
+<span class:list={['chip', `chip--${status}`]}>
+	<span class="chip__mark" aria-hidden="true"></span>
+	<span class="chip__text">{COPY[status]}</span>
+</span>
+
+<style>
+	.chip {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--s-2);
+		font-family: var(--font-mono);
+		font-size: var(--fs-2xs);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-label);
+		text-transform: uppercase;
+		white-space: nowrap;
+	}
+
+	.chip__mark {
+		width: 0.5em;
+		height: 0.5em;
+		background-color: currentColor;
+	}
+
+	/* Only work that is genuinely live gets the accent. Spending the one
+	   loud colour on everything would make it mean nothing. */
+	.chip--active {
+		color: var(--accent);
+	}
+
+	.chip--early {
+		color: var(--ink-3);
+	}
+
+	.chip--complete {
+		color: var(--ink-3);
+	}
+
+	/* An outlined square reads as "not yet filled in" for early work. */
+	.chip--early .chip__mark {
+		background-color: transparent;
+		box-shadow: inset 0 0 0 1px currentColor;
+	}
+</style>

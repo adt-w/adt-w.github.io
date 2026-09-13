@@ -99,6 +99,11 @@
 	--measure: 34rem;
 	--measure-wide: 46rem;
 
+	/* Height of the sticky masthead. Declared at root because base.css uses
+	   it as the scroll-padding offset for in-page anchors, and a value set
+	   inside a scoped component style would never reach <html>. */
+	--masthead-h: 3.5rem;
+
 	/* ── Rules ─────────────────────────────────────────────────────────────*/
 	--rule-hair: 1px;
 	--rule-heavy: 2px;

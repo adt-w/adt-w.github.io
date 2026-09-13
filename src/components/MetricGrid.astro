@@ -1,0 +1,69 @@
+---
+/**
+ * Measured results, set as large mono figures.
+ *
+ * Every value shown here is traceable to something real — a README table, a
+ * benchmark run, a competition placement. The optional note carries the
+ * reference point, because a number without its baseline is not a result.
+ */
+
+interface Metric {
+	label: string;
+	value: string;
+	note?: string;
+}
+
+interface Props {
+	metrics: readonly Metric[];
+}
+
+const { metrics } = Astro.props;
+---
+
+<dl class="metrics">
+	{
+		metrics.map((metric) => (
+			<div class="metrics__item">
+				<dt class="u-label metrics__label">{metric.label}</dt>
+				<dd class="metrics__value">{metric.value}</dd>
+				{metric.note && <dd class="metrics__note">{metric.note}</dd>}
+			</div>
+		))
+	}
+</dl>
+
+<style>
+	.metrics {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+		gap: var(--s-5) var(--grid-gap);
+		margin-block-start: var(--s-5);
+		padding-block-start: var(--s-5);
+		border-block-start: var(--rule-hair) solid var(--rule);
+	}
+
+	.metrics__item {
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-2);
+	}
+
+	.metrics__value {
+		margin: 0;
+		font-family: var(--font-mono);
+		font-size: var(--fs-lg);
+		font-weight: var(--fw-regular);
+		line-height: 1;
+		letter-spacing: var(--tr-tight);
+		font-variant-numeric: tabular-nums;
+		color: var(--ink);
+	}
+
+	.metrics__note {
+		margin: 0;
+		font-size: var(--fs-sm);
+		line-height: var(--lh-snug);
+		color: var(--ink-3);
+		text-wrap: pretty;
+	}
+</style>

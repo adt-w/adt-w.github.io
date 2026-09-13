@@ -1,78 +1,177 @@
 ---
 /**
- * PLACEHOLDER — replaced in commit 3 by the real page.
+ * The single page.
  *
- * Its only job right now is to exercise the design system end to end so the
- * type scale, colour, grid and both primitives can be seen rendering before
- * any content work starts.
+ * Everything here is driven by the content collections — the section counts,
+ * the ordering and the chronology all derive from the markdown files in
+ * src/content/. Adding a project means adding a file; this page does not
+ * change.
  */
+import { getCollection } from 'astro:content';
+
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
-import LedgerRow from '../components/LedgerRow.astro';
+import Hero from '../components/Hero.astro';
+import Chronology from '../components/Chronology.astro';
+import ExperienceEntry from '../components/ExperienceEntry.astro';
+import ProjectEntry from '../components/ProjectEntry.astro';
+import EducationEntry from '../components/EducationEntry.astro';
+import SkillsGrid from '../components/SkillsGrid.astro';
+import { site, contact } from '../data/site';
+import { byNewest } from '../lib/dates';
+import { url } from '../lib/url';
+
+const [experienceRaw, projectsRaw, educationRaw] = await Promise.all([
+	getCollection('experience'),
+	getCollection('projects'),
+	getCollection('education'),
+]);
+
+const experience = experienceRaw.sort((a, b) => byNewest(a.data, b.data));
+const education = educationRaw.sort((a, b) => byNewest(a.data, b.data));
+
+/**
+ * Featured projects lead, then the rest by date. Sorting featured to the top
+ * rather than into a separate section keeps one chronological list, so a
+ * reader never has to check two places for the same kind of thing.
+ */
+const projects = projectsRaw.sort((a, b) => {
+	if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+	return byNewest(a.data, b.data);
+});
+
+const activeCount = projects.filter((p) => p.data.status !== 'complete').length;
 ---
 
-<BaseLayout
-	title="Aditya Wadhwa"
-	description="Management Engineering student at the University of Waterloo working on data systems and machine learning."
->
-	<main id="main" class="page">
-		<h1 class="masthead">Aditya<br />Wadhwa</h1>
+<BaseLayout title={site.title} description={site.description}>
+	<Hero />
 
-		<Section index="01" title="Experience" id="experience" note="3 entries">
-			<LedgerRow label="2026.05 — 2026.08" sublabel="Ottawa, ON" rule={false}>
-				<h3 class="entry__title">Privy Council Office</h3>
-				<p class="entry__role">Student Data Analyst</p>
-			</LedgerRow>
+	<Section
+		index="01"
+		title="Chronology"
+		id="chronology"
+		note={`${experience.length + projects.length + education.length} entries`}
+	>
+		<Chronology />
+	</Section>
 
-			<LedgerRow label="2021.09 — 2024.05" sublabel="Ottawa, ON">
-				<h3 class="entry__title">Sparks Youth Robotics Club</h3>
-				<p class="entry__role">Mechanical Lead</p>
-			</LedgerRow>
-		</Section>
+	<Section
+		index="02"
+		title="Experience"
+		id="experience"
+		note={`${experience.length} roles`}
+	>
+		{
+			experience.map((entry, i) => (
+				<ExperienceEntry entry={entry} first={i === 0} />
+			))
+		}
+	</Section>
 
-		<Section index="02" title="Type specimen" id="specimen">
-			<p class="lead u-measure-wide">
-				A lead paragraph sits at eighteen pixels and a comfortable measure.
-				Hierarchy on this site is built from size, weight, space and hairline
-				rules — never from gradients, shadows or motion.
-			</p>
-			<p class="u-measure body">
-				Body copy runs at sixteen pixels over roughly sixty characters, which
-				is where sustained reading stays comfortable. Links such as
-				<a href="https://github.com/adt-w">this one</a> carry an underline at all
-				times, so colour is never the only thing marking them.
-			</p>
-		</Section>
-	</main>
+	<Section
+		index="03"
+		title="Projects"
+		id="projects"
+		note={activeCount > 0 ? `${projects.length} — ${activeCount} in progress` : `${projects.length}`}
+	>
+		{projects.map((entry, i) => <ProjectEntry entry={entry} first={i === 0} />)}
+	</Section>
+
+	<Section index="04" title="Skills" id="skills">
+		<SkillsGrid />
+	</Section>
+
+	<Section index="05" title="Education" id="education">
+		{
+			education.map((entry, i) => (
+				<EducationEntry entry={entry} first={i === 0} />
+			))
+		}
+	</Section>
+
+	<Section index="06" title="Contact" id="contact">
+		<p class="contact__lead u-measure-wide">
+			Open to co-op terms, and happy to talk about anything above — especially
+			the parts that did not work.
+		</p>
+
+		<ul class="contact__list">
+			{
+				contact.map((channel) => (
+					<li class="contact__item">
+						<span class="u-label">{channel.label}</span>
+						<a class="contact__value" href={channel.href}>
+							{channel.value}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+
+		<a class="contact__resume" href={url('/resume')}>
+			Read the resume
+			<span aria-hidden="true">→</span>
+		</a>
+	</Section>
 </BaseLayout>
 
 <style>
-	.masthead {
-		padding-block: var(--s-9) var(--s-7);
-		font-size: var(--fs-display);
-		font-weight: var(--fw-medium);
-		line-height: var(--lh-display);
-		letter-spacing: var(--tr-display);
-	}
-
-	.entry__title {
-		font-size: var(--fs-lg);
-		font-weight: var(--fw-medium);
-	}
-
-	.entry__role {
-		margin-block-start: var(--s-1);
-		color: var(--ink-2);
-	}
-
-	.lead {
+	.contact__lead {
 		font-size: var(--fs-md);
 		line-height: var(--lh-snug);
-		color: var(--ink);
 	}
 
-	.body {
-		margin-block-start: var(--s-5);
-		color: var(--ink-2);
+	.contact__list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--s-6) var(--s-8);
+		margin-block-start: var(--s-6);
+		padding-block-start: var(--s-5);
+		border-block-start: var(--rule-hair) solid var(--rule);
+	}
+
+	.contact__item {
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-2);
+	}
+
+	.contact__value {
+		font-family: var(--font-mono);
+		font-size: var(--fs-xs);
+		letter-spacing: var(--tr-mono);
+	}
+
+	.contact__resume {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--s-2);
+		margin-block-start: var(--s-6);
+		padding: var(--s-3) var(--s-5);
+		border: var(--rule-hair) solid var(--ink);
+		font-family: var(--font-mono);
+		font-size: var(--fs-2xs);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-label);
+		text-transform: uppercase;
+		text-decoration: none;
+		transition:
+			color var(--dur-fast) var(--ease),
+			border-color var(--dur-fast) var(--ease);
+	}
+
+	.contact__resume:hover {
+		color: var(--accent);
+		border-color: var(--accent);
+	}
+
+	/* The arrow carries the only movement on the page, and only on a direct
+	   interaction — never as an entrance effect. */
+	.contact__resume span {
+		transition: transform var(--dur-fast) var(--ease);
+	}
+
+	.contact__resume:hover span {
+		transform: translateX(2px);
 	}
 </style>

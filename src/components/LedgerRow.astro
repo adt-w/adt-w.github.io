@@ -16,12 +16,14 @@ interface Props {
 	sublabel?: string;
 	/** Render the top hairline. Off for the first row in a group. */
 	rule?: boolean;
+	/** Anchor id, so the chronology can deep-link straight to this entry. */
+	id?: string;
 }
 
-const { label, sublabel, rule = true } = Astro.props;
+const { label, sublabel, rule = true, id } = Astro.props;
 ---
 
-<div class:list={['row', rule && 'row--ruled']}>
+<div class:list={['row', rule && 'row--ruled']} id={id}>
 	<div class="row__meta">
 		<span class="u-mono row__label">{label}</span>
 		{sublabel && <span class="u-label row__sublabel">{sublabel}</span>}
@@ -44,7 +46,23 @@ const { label, sublabel, rule = true } = Astro.props;
 		border-block-start: var(--rule-hair) solid var(--rule);
 	}
 
+	/* Jumped to from the chronology. Without this the page simply scrolls and
+	   leaves the reader to work out which entry they landed on. */
+	.row:target .row__label {
+		color: var(--accent);
+	}
+
+	.row:target .row__meta::before {
+		content: '';
+		position: absolute;
+		inset-inline-start: calc(var(--s-4) * -1);
+		inset-block: 0;
+		width: 2px;
+		background-color: var(--accent);
+	}
+
 	.row__meta {
+		position: relative;
 		display: flex;
 		flex-direction: column;
 		gap: var(--s-2);

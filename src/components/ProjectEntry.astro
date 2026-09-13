@@ -1,0 +1,154 @@
+---
+/**
+ * One project. Same ledger row as an experience entry, with three additions:
+ * a status chip, a measured-results block, and links out to the source.
+ */
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+
+import LedgerRow from './LedgerRow.astro';
+import TagList from './TagList.astro';
+import HighlightList from './HighlightList.astro';
+import StatusChip from './StatusChip.astro';
+import MetricGrid from './MetricGrid.astro';
+import { formatRange, formatRangeLong } from '../lib/dates';
+
+interface Props {
+	entry: CollectionEntry<'projects'>;
+	first?: boolean;
+}
+
+const { entry, first = false } = Astro.props;
+const { title, blurb, status, start, end, stack, repo, demo, highlights, metrics } =
+	entry.data;
+
+/** The markdown body is optional — only some entries carry a closing note. */
+const { Content } = await render(entry);
+const hasNote = entry.body !== undefined && entry.body.trim().length > 0;
+---
+
+<LedgerRow
+	label={formatRange(start, end)}
+	rule={!first}
+	id={`proj-${entry.id}`}
+>
+	<div class="project">
+		<div class="project__head">
+			<h3 class="project__title">{title}</h3>
+			<StatusChip status={status} />
+		</div>
+
+		<p class="project__blurb">{blurb}</p>
+		<span class="visually-hidden">{formatRangeLong(start, end)}</span>
+
+		<div class="project__stack">
+			<TagList items={stack} label={`Built with`} />
+		</div>
+
+		{metrics.length > 0 && <MetricGrid metrics={metrics} />}
+
+		<HighlightList items={highlights} />
+
+		{
+			hasNote && (
+				<div class="project__note">
+					<Content />
+				</div>
+			)
+		}
+
+		{
+			(repo || demo) && (
+				<div class="project__links">
+					{repo && (
+						<a class="project__link" href={repo} rel="noopener">
+							Source
+							<span class="project__arrow" aria-hidden="true">
+								↗
+							</span>
+						</a>
+					)}
+					{demo && (
+						<a class="project__link" href={demo} rel="noopener">
+							Live
+							<span class="project__arrow" aria-hidden="true">
+								↗
+							</span>
+						</a>
+					)}
+				</div>
+			)
+		}
+	</div>
+</LedgerRow>
+
+<style>
+	.project__head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: var(--s-3) var(--s-4);
+	}
+
+	.project__title {
+		font-size: var(--fs-lg);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-tight);
+	}
+
+	.project__blurb {
+		margin-block-start: var(--s-2);
+		max-width: var(--measure-wide);
+		color: var(--ink-2);
+	}
+
+	.project__stack {
+		margin-block-start: var(--s-4);
+	}
+
+	/* A closing note set against a hairline, for the one or two sentences
+	   that explain the state of the work rather than its results. */
+	.project__note {
+		margin-block-start: var(--s-5);
+		padding-inline-start: var(--s-5);
+		border-inline-start: var(--rule-hair) solid var(--rule);
+		max-width: var(--measure-wide);
+		font-size: var(--fs-sm);
+		line-height: var(--lh-snug);
+		color: var(--ink-3);
+	}
+
+	.project__note :global(p + p) {
+		margin-block-start: var(--s-3);
+	}
+
+	.project__links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--s-5);
+		margin-block-start: var(--s-5);
+	}
+
+	.project__link {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--s-2);
+		font-family: var(--font-mono);
+		font-size: var(--fs-xs);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-label);
+		text-transform: uppercase;
+		text-decoration-color: var(--ink-3);
+	}
+
+	.project__arrow {
+		font-size: 0.9em;
+		transition: transform var(--dur-fast) var(--ease);
+	}
+
+	/* The only movement on the page, and it is one pixel of feedback on a
+	   direct interaction — not an entrance effect. */
+	.project__link:hover .project__arrow {
+		transform: translate(1px, -1px);
+	}
+</style>

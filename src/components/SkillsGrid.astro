@@ -1,0 +1,19 @@
+---
+/**
+ * Skills, grouped. Each group is a ledger row so the section shares the
+ * page's one structural relationship rather than introducing a card grid.
+ */
+import LedgerRow from './LedgerRow.astro';
+import TagList from './TagList.astro';
+import { skills } from '../data/site';
+---
+
+<div>
+	{
+		skills.map((group, i) => (
+			<LedgerRow label={group.group} rule={i > 0}>
+				<TagList items={group.items} label={group.group} />
+			</LedgerRow>
+		))
+	}
+</div>

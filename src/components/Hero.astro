@@ -1,0 +1,81 @@
+---
+/**
+ * Opening block: name set as display type, then the professional summary
+ * placed in the same two-column ledger grid as every other entry, so the
+ * page establishes its one structural idea immediately.
+ */
+import { site, summary } from '../data/site';
+---
+
+<section class="hero" id="summary" aria-labelledby="hero-name">
+	<h1 class="hero__name" id="hero-name">Aditya<br />Wadhwa</h1>
+
+	<p class="u-label hero__role">{site.role}</p>
+
+	<div class="hero__body">
+		<div class="hero__aside">
+			<span class="u-label">Summary</span>
+		</div>
+
+		<div class="hero__prose">
+			{summary.map((paragraph, i) => <p class:list={['hero__p', i === 0 && 'hero__p--lead']}>{paragraph}</p>)}
+		</div>
+	</div>
+</section>
+
+<style>
+	.hero {
+		padding-block-start: clamp(3rem, 1rem + 8vw, 7rem);
+	}
+
+	.hero__name {
+		font-size: var(--fs-display);
+		font-weight: var(--fw-medium);
+		line-height: var(--lh-display);
+		letter-spacing: var(--tr-display);
+		/* Display type is the one place optical alignment matters enough to
+		   pull the block flush with the page edge against its side bearing. */
+		margin-inline-start: -0.045em;
+	}
+
+	.hero__role {
+		margin-block-start: var(--s-6);
+		padding-block-start: var(--s-4);
+		border-block-start: var(--rule-heavy) solid var(--rule-strong);
+		color: var(--ink);
+	}
+
+	.hero__body {
+		display: grid;
+		grid-template-columns: var(--col-label) 1fr;
+		gap: var(--grid-gap);
+		margin-block-start: var(--s-7);
+	}
+
+	.hero__prose {
+		max-width: var(--measure-wide);
+	}
+
+	.hero__p {
+		color: var(--ink-2);
+	}
+
+	.hero__p + .hero__p {
+		margin-block-start: var(--s-4);
+	}
+
+	/* The first paragraph carries slightly more weight and size so the eye
+	   has somewhere to land after the display type. */
+	.hero__p--lead {
+		font-size: var(--fs-md);
+		line-height: var(--lh-snug);
+		color: var(--ink);
+	}
+
+	@media (max-width: 40rem) {
+		.hero__body {
+			grid-template-columns: 1fr;
+			gap: var(--s-4);
+		}
+	}
+</style>

@@ -1,0 +1,138 @@
+/* ============================================================================
+   PRINT
+   The page printed is a CV, not a screenshot of a website.
+
+   Interface chrome is removed, the screen's two-column ledger collapses to a
+   single flow, colour drops to black on white, and link destinations are
+   written out — because a printed underline points nowhere.
+   ========================================================================== */
+
+@media print {
+	/* Force the light palette regardless of the reader's theme; a dark page
+	   prints as a solid block of toner. */
+	:root,
+	:root[data-theme='dark'] {
+		--paper: #ffffff;
+		--paper-sunk: #ffffff;
+		--ink: #000000;
+		--ink-2: #1a1a1a;
+		--ink-3: #4a4a4a;
+		--rule: #bbbbbb;
+		--rule-strong: #000000;
+		--accent: #000000;
+
+		color-scheme: light;
+	}
+
+	@page {
+		margin: 16mm 14mm;
+	}
+
+	html {
+		font-size: 10.5pt;
+	}
+
+	body {
+		background: #fff;
+	}
+
+	/* ── Remove interface chrome ────────────────────────────────────────── */
+	.masthead,
+	.skip-link,
+	.chrono__controls,
+	.theme-toggle,
+	.footer__links,
+	.contact__resume,
+	/* The resume page prints the real PDF, not a screenshot of a viewer. */
+	.resume__frame,
+	.resume__actions {
+		display: none !important;
+	}
+
+	/* The chronology duplicates, in summary form, everything the sections
+	   below state in full. On paper that is a wasted page. */
+	#chronology {
+		display: none !important;
+	}
+
+	.page {
+		max-width: none;
+		padding-inline: 0;
+	}
+
+	/* ── Collapse the ledger to one column ──────────────────────────────── */
+	.row,
+	.section__head,
+	.hero__body {
+		display: block !important;
+	}
+
+	.row__meta {
+		margin-block-end: 2mm;
+	}
+
+	/* ── Tighten vertical rhythm ────────────────────────────────────────── */
+	.section {
+		padding-block-start: 8mm;
+	}
+
+	.section__body {
+		padding-block-start: 4mm;
+	}
+
+	.row {
+		padding-block: 4mm;
+	}
+
+	.hero {
+		padding-block-start: 0;
+	}
+
+	.hero__name {
+		font-size: 26pt;
+	}
+
+	.hero__body {
+		margin-block-start: 4mm;
+	}
+
+	/* ── Keep entries intact across page breaks ─────────────────────────── */
+	.row,
+	.metrics__item,
+	.highlights__item {
+		break-inside: avoid;
+	}
+
+	.section__head {
+		break-after: avoid;
+	}
+
+	h1,
+	h2,
+	h3 {
+		break-after: avoid;
+	}
+
+	/* ── Write out destinations ─────────────────────────────────────────── */
+	a {
+		text-decoration: none;
+		color: #000;
+	}
+
+	/* Only external links need their address spelled out — in-page anchors
+	   are meaningless on paper. */
+	.project__link[href^='http']::after,
+	.contact__value[href^='http']::after {
+		content: ' (' attr(href) ')';
+		font-family: var(--font-mono);
+		font-size: 8pt;
+		font-weight: 400;
+		letter-spacing: 0;
+		text-transform: none;
+		word-break: break-all;
+	}
+
+	.project__arrow {
+		display: none;
+	}
+}

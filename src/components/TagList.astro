@@ -1,0 +1,38 @@
+---
+/**
+ * A row of tools or methods. Part of the mono metadata layer — these are
+ * scannable labels, not links, and are separated by rules rather than
+ * wrapped in pills, which keeps the page free of rounded chrome.
+ */
+
+interface Props {
+	items: readonly string[];
+	/** Accessible name, since a bare list of nouns needs context. */
+	label?: string;
+}
+
+const { items, label = 'Tools and methods' } = Astro.props;
+---
+
+<ul class="tags" aria-label={label}>
+	{items.map((item) => <li class="tags__item">{item}</li>)}
+</ul>
+
+<style>
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--s-2) var(--s-4);
+		font-family: var(--font-mono);
+		font-size: var(--fs-xs);
+		letter-spacing: var(--tr-mono);
+		color: var(--ink-3);
+	}
+
+	/* A hairline before each item except the first, standing in for a
+	   separator without adding a character that screen readers would announce. */
+	.tags__item + .tags__item {
+		padding-inline-start: var(--s-4);
+		border-inline-start: var(--rule-hair) solid var(--rule);
+	}
+</style>

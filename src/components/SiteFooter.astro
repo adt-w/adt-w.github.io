@@ -1,0 +1,82 @@
+---
+/**
+ * Closing block.
+ *
+ * Deliberately thin. Contact details live in one place — section 06 — and
+ * repeating them here was the third copy on the page, which made none of
+ * them read as the authoritative one.
+ */
+import { url } from '../lib/url';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+	<div class="page footer__inner">
+		<p class="footer__wordmark">Aditya Wadhwa</p>
+
+		<div class="footer__meta">
+			<p class="u-label footer__copy">© {year}</p>
+
+			<div class="footer__links">
+				<a class="footer__link" href={url('/#contact')}>Get in touch</a>
+				<a class="footer__link" href={url('/resume')}>Resume</a>
+				<a class="footer__link" href="#main">
+					Top
+					<span aria-hidden="true">↑</span>
+				</a>
+			</div>
+		</div>
+	</div>
+</footer>
+
+<style>
+	.footer {
+		margin-block-start: var(--space-section);
+		border-block-start: var(--rule-heavy) solid var(--rule-strong);
+	}
+
+	.footer__inner {
+		padding-block: var(--s-6) var(--s-8);
+	}
+
+	.footer__wordmark {
+		font-size: var(--fs-lg);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-tight);
+	}
+
+	.footer__meta {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--s-4) var(--s-6);
+		margin-block-start: var(--s-6);
+		padding-block-start: var(--s-4);
+		border-block-start: var(--rule-hair) solid var(--rule);
+	}
+
+	.footer__links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--s-5);
+	}
+
+	.footer__link {
+		display: inline-flex;
+		gap: var(--s-2);
+		font-family: var(--font-mono);
+		font-size: var(--fs-2xs);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-label);
+		text-transform: uppercase;
+		text-decoration: none;
+		color: var(--ink-3);
+		transition: color var(--dur-fast) var(--ease);
+	}
+
+	.footer__link:hover {
+		color: var(--ink);
+	}
+</style>

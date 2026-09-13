@@ -1,0 +1,355 @@
+---
+/**
+ * A single merged chronology of work, projects and education.
+ *
+ * This is the one view that shows how the strands actually interleave —
+ * that AccessView started while the NHL pipeline was still open, that the
+ * Privy Council term ran through the summer between them. Individual
+ * sections below cannot show that, because each only knows its own kind.
+ *
+ * Built as a ruled ledger rather than a spine-and-dots timeline: years are
+ * markers in the metadata column, entries are rows, and the whole thing
+ * stays dense enough to read at a glance.
+ */
+import { getCollection } from 'astro:content';
+import { byNewest, yearOf, formatMonthAbbr } from '../lib/dates';
+
+type EventType = 'work' | 'project' | 'education';
+
+interface ChronoEvent {
+	title: string;
+	detail: string;
+	type: EventType;
+	start: string;
+	end: string | null;
+	href: string;
+}
+
+const [experience, projects, education] = await Promise.all([
+	getCollection('experience'),
+	getCollection('projects'),
+	getCollection('education'),
+]);
+
+const events: ChronoEvent[] = [
+	...experience.map((entry) => ({
+		title: entry.data.org,
+		detail: entry.data.role,
+		type: 'work' as const,
+		start: entry.data.start,
+		end: entry.data.end,
+		href: `#exp-${entry.id}`,
+	})),
+	...projects.map((entry) => ({
+		title: entry.data.title,
+		detail: entry.data.blurb,
+		type: 'project' as const,
+		start: entry.data.start,
+		end: entry.data.end,
+		href: `#proj-${entry.id}`,
+	})),
+	...education.map((entry) => ({
+		title: entry.data.institution,
+		detail: entry.data.credential,
+		type: 'education' as const,
+		start: entry.data.start,
+		end: entry.data.end,
+		href: `#edu-${entry.id}`,
+	})),
+].sort(byNewest);
+
+/** Group into years, preserving the newest-first order. */
+const years: { year: string; events: ChronoEvent[] }[] = [];
+for (const event of events) {
+	const year = yearOf(event.start);
+	const group = years.at(-1);
+	if (group?.year === year) group.events.push(event);
+	else years.push({ year, events: [event] });
+}
+
+const FILTERS = [
+	{ value: 'all', label: 'All' },
+	{ value: 'work', label: 'Work' },
+	{ value: 'project', label: 'Projects' },
+	{ value: 'education', label: 'Education' },
+] as const;
+
+const TYPE_LABEL: Record<EventType, string> = {
+	work: 'Work',
+	project: 'Project',
+	education: 'Education',
+};
+---
+
+<div class="chrono" data-chrono>
+	<div class="chrono__controls" role="group" aria-label="Filter chronology">
+		{
+			FILTERS.map((filter, i) => (
+				<button
+					class="chrono__filter"
+					type="button"
+					data-filter={filter.value}
+					aria-pressed={i === 0 ? 'true' : 'false'}
+				>
+					{filter.label}
+				</button>
+			))
+		}
+	</div>
+
+	<div class="chrono__ledger">
+		{
+			years.map((group) => (
+				<section class="chrono__year" data-year={group.year}>
+					<h3 class="chrono__year-label">{group.year}</h3>
+
+					<ul class="chrono__entries">
+						{group.events.map((event) => (
+							<li class="chrono__entry" data-type={event.type}>
+								<a class="chrono__link" href={event.href}>
+									<span class="chrono__month">{formatMonthAbbr(event.start)}</span>
+
+									<span class="chrono__content">
+										<span class="chrono__title">
+											{event.title}
+											{event.end === null && (
+												<span class="chrono__ongoing" aria-label="Ongoing" title="Ongoing" />
+											)}
+										</span>
+										<span class="chrono__detail">{event.detail}</span>
+									</span>
+
+									<span class="u-label chrono__type">{TYPE_LABEL[event.type]}</span>
+								</a>
+							</li>
+						))}
+					</ul>
+				</section>
+			))
+		}
+	</div>
+
+	<p class="chrono__empty" data-chrono-empty hidden>No entries of that kind.</p>
+</div>
+
+<style>
+	/* ── Filters ───────────────────────────────────────────────────────────
+	   Text buttons, not pills. The pressed state is an underline in the
+	   accent, which is the same language links already use on this site. */
+	.chrono__controls {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--s-5);
+		margin-block-end: var(--s-6);
+	}
+
+	.chrono__filter {
+		padding: 0 0 var(--s-1);
+		background: none;
+		border: 0;
+		border-block-end: var(--rule-heavy) solid transparent;
+		font-family: var(--font-mono);
+		font-size: var(--fs-2xs);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-label);
+		text-transform: uppercase;
+		color: var(--ink-3);
+		cursor: pointer;
+		transition:
+			color var(--dur-fast) var(--ease),
+			border-color var(--dur-fast) var(--ease);
+	}
+
+	.chrono__filter:hover {
+		color: var(--ink);
+	}
+
+	.chrono__filter[aria-pressed='true'] {
+		color: var(--ink);
+		border-block-end-color: var(--accent);
+	}
+
+	/* ── Ledger ────────────────────────────────────────────────────────────*/
+	.chrono__year {
+		display: grid;
+		grid-template-columns: var(--col-label) 1fr;
+		gap: var(--grid-gap);
+		padding-block: var(--s-5);
+		border-block-start: var(--rule-hair) solid var(--rule);
+	}
+
+	.chrono__year[hidden] {
+		display: none;
+	}
+
+	.chrono__year-label {
+		font-family: var(--font-mono);
+		font-size: var(--fs-lg);
+		font-weight: var(--fw-regular);
+		line-height: 1;
+		letter-spacing: var(--tr-tight);
+		font-variant-numeric: tabular-nums;
+		color: var(--ink-3);
+	}
+
+	.chrono__entry[hidden] {
+		display: none;
+	}
+
+	/* ── Entry row ─────────────────────────────────────────────────────────*/
+	.chrono__link {
+		display: grid;
+		grid-template-columns: 2.75rem 1fr auto;
+		gap: var(--s-4);
+		align-items: baseline;
+		/* Bleeds into the gutter by its own padding, so the hover surface is
+		   wider than the text and the whole row reads as one control. Doing it
+		   with margin and padding rather than a spread box-shadow means the
+		   row rule below lines up with the highlight exactly. */
+		margin-inline: calc(var(--s-4) * -1);
+		padding: var(--s-3) var(--s-4);
+		text-decoration: none;
+		transition: background-color var(--dur-fast) var(--ease);
+	}
+
+	.chrono__link:hover {
+		background-color: var(--paper-sunk);
+	}
+
+	.chrono__entry + .chrono__entry .chrono__link {
+		border-block-start: var(--rule-hair) solid var(--rule);
+	}
+
+	/* Set as a label rather than a figure: under a year heading these are
+	   dates, and digits alone were reading as row numbers. */
+	.chrono__month {
+		font-family: var(--font-mono);
+		font-size: var(--fs-2xs);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-label);
+		text-transform: uppercase;
+		color: var(--ink-3);
+	}
+
+	.chrono__content {
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-1);
+		min-width: 0;
+	}
+
+	.chrono__title {
+		display: flex;
+		align-items: center;
+		gap: var(--s-2);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-tight);
+		color: var(--ink);
+	}
+
+	.chrono__link:hover .chrono__title {
+		color: var(--accent);
+	}
+
+	/* Ongoing marker, matching the square used by StatusChip. */
+	.chrono__ongoing {
+		width: 0.4em;
+		height: 0.4em;
+		flex-shrink: 0;
+		background-color: var(--accent);
+	}
+
+	.chrono__detail {
+		font-size: var(--fs-sm);
+		line-height: var(--lh-snug);
+		color: var(--ink-3);
+		/* Blurbs vary in length; one line keeps the ledger scannable. */
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.chrono__type {
+		text-align: end;
+	}
+
+	.chrono__empty {
+		padding-block: var(--s-6);
+		border-block-start: var(--rule-hair) solid var(--rule);
+		color: var(--ink-3);
+	}
+
+	@media (max-width: 40rem) {
+		.chrono__year {
+			grid-template-columns: 1fr;
+			gap: var(--s-3);
+		}
+
+		.chrono__link {
+			grid-template-columns: 2.75rem 1fr;
+		}
+
+		/* The type label moves under the title rather than competing with it
+		   for the little horizontal room a phone has. */
+		.chrono__type {
+			grid-column: 2;
+			text-align: start;
+		}
+
+		.chrono__detail {
+			white-space: normal;
+			overflow: visible;
+		}
+	}
+</style>
+
+<script>
+	/**
+	 * Chronology filtering. Hides entries of other kinds, then hides any year
+	 * group left with nothing in it, so the ledger never shows an empty year.
+	 */
+	const root = document.querySelector<HTMLElement>('[data-chrono]');
+
+	if (root) {
+		const filters = Array.from(
+			root.querySelectorAll<HTMLButtonElement>('[data-filter]'),
+		);
+		const yearGroups = Array.from(
+			root.querySelectorAll<HTMLElement>('.chrono__year'),
+		);
+		const empty = root.querySelector<HTMLElement>('[data-chrono-empty]');
+
+		function apply(value: string) {
+			let shown = 0;
+
+			for (const group of yearGroups) {
+				const entries = Array.from(
+					group.querySelectorAll<HTMLElement>('.chrono__entry'),
+				);
+				let visibleInGroup = 0;
+
+				for (const entry of entries) {
+					const match = value === 'all' || entry.dataset.type === value;
+					entry.hidden = !match;
+					if (match) visibleInGroup += 1;
+				}
+
+				group.hidden = visibleInGroup === 0;
+				shown += visibleInGroup;
+			}
+
+			if (empty) empty.hidden = shown > 0;
+
+			for (const filter of filters) {
+				filter.setAttribute(
+					'aria-pressed',
+					String(filter.dataset.filter === value),
+				);
+			}
+		}
+
+		for (const filter of filters) {
+			filter.addEventListener('click', () => apply(filter.dataset.filter ?? 'all'));
+		}
+	}
+</script>
