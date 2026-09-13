@@ -19,7 +19,7 @@ interface Props {
 }
 
 const { entry, first = false } = Astro.props;
-const { title, blurb, status, start, end, stack, repo, demo, highlights, metrics } =
+const { title, blurb, status, start, end, stack, repo, demo, highlights, metrics, featured } =
 	entry.data;
 
 /** The markdown body is optional — only some entries carry a closing note. */
@@ -34,7 +34,7 @@ const hasNote = entry.body !== undefined && entry.body.trim().length > 0;
 >
 	<div class="project">
 		<div class="project__head">
-			<h3 class="project__title">{title}</h3>
+			<h3 class:list={['project__title', featured && 'project__title--lead']}>{title}</h3>
 			<StatusChip status={status} />
 		</div>
 
@@ -94,6 +94,13 @@ const hasNote = entry.body !== undefined && entry.body.trim().length > 0;
 		font-size: var(--fs-lg);
 		font-weight: var(--fw-medium);
 		letter-spacing: var(--tr-tight);
+	}
+
+	/* Featured work carries more type weight so the section has a shape.
+	   Six entries set identically read as a list to scroll past; a couple
+	   given prominence gives the eye somewhere to start. */
+	.project__title--lead {
+		font-size: var(--fs-xl);
 	}
 
 	.project__blurb {

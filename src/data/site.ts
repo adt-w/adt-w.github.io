@@ -24,9 +24,9 @@ export const site = {
  * like a summary of you. Each paragraph is rendered as its own block.
  */
 export const summary: readonly string[] = [
-	'I am a Management Engineering student at the University of Waterloo, working where data systems meet the decisions they are supposed to support.',
-	'Most of what I build is in service of making something legible — employment equity dashboards that let federal directors see representation gaps without an analyst in the room, a classifier that sorts exoplanet candidates out of 50GB of Kepler and TESS observations, a model that tries to predict NHL games and mostly does not, which turned out to be the more useful result.',
-	'The part I care about is the one most projects skip: whether the number you are looking at is one you should actually trust.',
+	"I'm a Management Engineering student at the University of Waterloo. I build data systems, and the tools that make them readable.",
+	'So far that has meant employment equity dashboards that let federal directors find representation gaps without booking an analyst, a classifier that pulls exoplanet candidates out of 50GB of Kepler and TESS observations, and a model that tries to predict NHL games and mostly fails. The last one taught me the most.',
+	"I care about the question most projects skip: should you trust the number you're looking at?",
 ] as const;
 
 /**

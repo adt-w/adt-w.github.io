@@ -9,9 +9,9 @@ stack: [Python, scikit-learn, pandas, NumPy]
 repo: https://github.com/adt-w/NHL-Predictor-Pipeline
 highlights:
   - Pairs MoneyPuck team analytics (expected goals, Corsi, high-danger shots) with game results from the public NHL API, trains a soft-voting ensemble of logistic regression and gradient boosting, and converts per-game win probabilities into projected records by division, conference and league.
-  - Enforces a strict leakage rule — a game in season N is only ever paired with team strength from season N−1, because a season's own end-of-year statistics have already seen the games being predicted.
+  - "Enforces a strict leakage rule: a game in season N is only ever paired with team strength from season N−1, because a season's own end-of-year statistics have already seen the games being predicted."
   - Tested multi-season feature blending across four weightings and rejected it. Degradation was monotonic on every metric, traced to 20–30% annual roster turnover diluting a strong signal (season N predicts N+1 at r = +0.72; season N−2 at just +0.39).
-  - Identified `home_ice` as a dead feature — constant at 1, so StandardScaler zeroes it and trees cannot split on it — and retracted an earlier recommendation to shrink toward the league mean after proving it a mathematical no-op that cancels in the home-minus-away difference.
+  - Found `home_ice` to be a dead feature. It sits constant at 1, so StandardScaler zeroes it and the trees cannot split on it. Also retracted an earlier recommendation to shrink toward the league mean, after proving it a mathematical no-op that cancels out in the home-minus-away difference.
 metrics:
   - label: Ensemble accuracy
     value: 53.7%
@@ -28,7 +28,7 @@ metrics:
 ---
 
 Still in progress. The pipeline runs end to end, but the model is only slightly
-better than guessing — and establishing that rigorously, rather than reporting a
-flattering number, is what the project is actually about. Every metric is quoted
-against its no-skill reference, and two proposed improvements were tested and
-documented as failures rather than quietly dropped.
+better than guessing, and establishing that rigorously is what the project is
+actually about. Every metric is quoted against its no-skill reference, and two
+proposed improvements were tested and written up as failures instead of being
+quietly dropped.
