@@ -119,7 +119,22 @@ export function sortKey(entry: { start: string; end: string | null }): string {
 	return `${entry.end === null ? '9999-99' : entry.start}|${entry.start}`;
 }
 
-/** Newest first. The single ordering used by every list on the site. */
+/**
+ * Newest first, ongoing work leading. Used by the Experience, Education and
+ * Projects sections, where whatever is current should come first.
+ */
 export function byNewest<T extends { start: string; end: string | null }>(a: T, b: T): number {
 	return sortKey(b).localeCompare(sortKey(a));
+}
+
+/**
+ * Strictly by start date, newest first. Used by the chronology, which groups
+ * consecutive entries under year headings: lifting ongoing entries to the top
+ * would pull an older start (a degree begun in 2025) above newer ones and
+ * split a year into two groups. Ties go to ongoing work, then to the later end.
+ */
+export function byStartDesc<T extends { start: string; end: string | null }>(a: T, b: T): number {
+	if (a.start !== b.start) return b.start.localeCompare(a.start);
+	if ((a.end === null) !== (b.end === null)) return a.end === null ? -1 : 1;
+	return (b.end ?? '').localeCompare(a.end ?? '');
 }

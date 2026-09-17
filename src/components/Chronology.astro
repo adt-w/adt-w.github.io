@@ -12,7 +12,7 @@
  * stays dense enough to read at a glance.
  */
 import { getCollection } from 'astro:content';
-import { byNewest, yearOf, formatShortRange, formatDuration } from '../lib/dates';
+import { byStartDesc, yearOf, formatShortRange, formatDuration } from '../lib/dates';
 
 type EventType = 'work' | 'project' | 'education';
 
@@ -56,9 +56,9 @@ const events: ChronoEvent[] = [
 		end: entry.data.end,
 		href: `#edu-${entry.id}`,
 	})),
-].sort(byNewest);
+].sort(byStartDesc);
 
-/** Group into years, preserving the newest-first order. */
+/** Group into years. Sorting by start date guarantees each year is contiguous. */
 const years: { year: string; events: ChronoEvent[] }[] = [];
 for (const event of events) {
 	const year = yearOf(event.start);
@@ -82,7 +82,7 @@ const TYPE_LABEL: Record<EventType, string> = {
 ---
 
 <div class="chrono" data-chrono>
-	<div class="chrono__controls" role="group" aria-label="Filter chronology">
+	<div class="chrono__controls" role="group" aria-label="Filter chronology" data-reveal>
 		{
 			FILTERS.map((filter, i) => (
 				<button
@@ -97,12 +97,12 @@ const TYPE_LABEL: Record<EventType, string> = {
 		}
 	</div>
 
-	<p class="u-label chrono__caption">Newest first</p>
+	<p class="u-label chrono__caption" data-reveal>Newest first</p>
 
 	<div class="chrono__ledger">
 		{
 			years.map((group) => (
-				<section class="chrono__year" data-year={group.year}>
+				<section class="chrono__year" data-year={group.year} data-reveal>
 					<h3 class="chrono__year-label">{group.year}</h3>
 
 					<ul class="chrono__entries">
@@ -396,14 +396,30 @@ const TYPE_LABEL: Record<EventType, string> = {
 			gap: var(--s-3);
 		}
 
+		/* One column: date, then entry, then type, each on its own line. The
+		   gutter bleed exists for the desktop hover highlight; on a phone it
+		   only pushed the row rules out of line with the year rules. */
 		.chrono__link {
 			grid-template-columns: 1fr;
+			gap: var(--s-2);
+			margin-inline: 0;
+			padding-inline: 0;
 		}
 
-		/* The type label moves under the title rather than competing with it
-		   for the little horizontal room a phone has. */
+		/* Span and duration share a line here, since there is no side column
+		   for the duration to sit under. */
+		.chrono__when {
+			flex-direction: row;
+			flex-wrap: wrap;
+			align-items: baseline;
+			gap: var(--s-1) var(--s-3);
+		}
+
+		/* Pinned to the single column. Placing it in column 2 would make the
+		   grid invent a second, implicit column and squeeze every entry into
+		   a strip beside its date. */
 		.chrono__type {
-			grid-column: 2;
+			grid-column: 1;
 			text-align: start;
 		}
 
