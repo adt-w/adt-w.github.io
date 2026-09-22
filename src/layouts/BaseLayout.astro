@@ -7,6 +7,7 @@ import { Font } from 'astro:assets';
 import Masthead from '../components/Masthead.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import ScrollSpy from '../components/ScrollSpy.astro';
+import ScrollReveal from '../components/ScrollReveal.astro';
 
 import '../styles/tokens.css';
 import '../styles/base.css';
@@ -55,6 +56,25 @@ const { title, description } = Astro.props;
 				/* Storage blocked — fall through to the system preference. */
 			}
 		</script>
+
+		{/* Decides, before anything paints, whether content may start hidden for
+		    the scroll reveal. Hiding it later would flash it on and then off.
+		    Skipped entirely without IntersectionObserver or when the reader
+		    prefers reduced motion. The timeout is a safety net: if the reveal
+		    script has not started within 2.5s (blocked, failed to load), the
+		    class comes off and everything simply shows. */}
+		<script is:inline>
+			if (
+				'IntersectionObserver' in window &&
+				!window.matchMedia('(prefers-reduced-motion: reduce)').matches
+			) {
+				const root = document.documentElement;
+				root.classList.add('js-reveal');
+				setTimeout(() => {
+					if (!root.dataset.revealReady) root.classList.remove('js-reveal');
+				}, 2500);
+			}
+		</script>
 	</head>
 
 	<body>
@@ -68,5 +88,6 @@ const { title, description } = Astro.props;
 
 		<SiteFooter />
 		<ScrollSpy />
+		<ScrollReveal />
 	</body>
 </html>

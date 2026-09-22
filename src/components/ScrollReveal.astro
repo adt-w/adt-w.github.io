@@ -1,0 +1,53 @@
+---
+/**
+ * Fades content in the first time it scrolls into view.
+ *
+ * Renders nothing. Works on any element marked data-reveal; the styles live
+ * in base.css. Only runs if the inline script in BaseLayout has already added
+ * .js-reveal, which it does only when IntersectionObserver exists and the
+ * reader has not asked for reduced motion.
+ *
+ * Each element reveals once and is then unobserved, so scrolling back up
+ * never replays the effect and a long page costs nothing once it has been read.
+ */
+---
+
+<script>
+	const root = document.documentElement;
+
+	if (root.classList.contains('js-reveal')) {
+		// Tells the inline safety net in BaseLayout that the reveal is running.
+		root.dataset.revealReady = 'true';
+
+		/** Delay between elements that arrive together, e.g. rows on first load. */
+		const STAGGER_MS = 80;
+		/** Past this many, the rest share the last delay so nothing waits long. */
+		const STAGGER_CAP = 4;
+
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const arriving = entries
+					.filter((entry) => entry.isIntersecting)
+					.map((entry) => entry.target as HTMLElement)
+					// Observer batches are not guaranteed to be in page order.
+					.sort((a, b) =>
+						a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1,
+					);
+
+				arriving.forEach((element, i) => {
+					const delay = Math.min(i, STAGGER_CAP) * STAGGER_MS;
+					element.style.setProperty('--reveal-delay', `${delay}ms`);
+					element.classList.add('is-revealed');
+					observer.unobserve(element);
+				});
+			},
+			// Waits until an element is slightly clear of the bottom edge, so the
+			// fade is seen happening rather than finishing out of sight.
+			{ rootMargin: '0px 0px -8% 0px', threshold: 0 },
+		);
+
+		for (const element of document.querySelectorAll<HTMLElement>('[data-reveal]')) {
+			observer.observe(element);
+		}
+	}
+</script>

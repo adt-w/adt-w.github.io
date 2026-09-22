@@ -153,8 +153,7 @@ const hasNote = entry.body !== undefined && entry.body.trim().length > 0;
 		transition: transform var(--dur-fast) var(--ease);
 	}
 
-	/* The only movement on the page, and it is one pixel of feedback on a
-	   direct interaction — not an entrance effect. */
+	/* One pixel of feedback on a direct interaction. */
 	.project__link:hover .project__arrow {
 		transform: translate(1px, -1px);
 	}

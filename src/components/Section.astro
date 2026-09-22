@@ -23,7 +23,7 @@ const { index, title, id, note } = Astro.props;
 ---
 
 <section class="section" id={id} aria-labelledby={`${id}-heading`}>
-	<header class="section__head">
+	<header class="section__head" data-reveal>
 		<span class="u-label section__index" aria-hidden="true">{index}</span>
 		<div class="section__title-row">
 			<h2 class="section__title" id={`${id}-heading`}>{title}</h2>

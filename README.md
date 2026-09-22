@@ -114,12 +114,17 @@ src/
 
 ## Design
 
-Hierarchy comes from type size, weight, space and hairline rules — no
-gradients, shadows, rounded corners or entrance animation. Two typefaces:
-Archivo carries content, IBM Plex Mono carries the metadata layer (dates, tags,
-indices, status). One accent colour, used sparingly. Fonts are downloaded,
-subsetted and self-hosted at build time, so the page makes no third-party
-requests at runtime.
+Hierarchy comes from type size, weight, space and hairline rules. No
+gradients, shadows or rounded corners. Two typefaces: Archivo carries content,
+IBM Plex Mono carries the metadata layer (dates, tags, indices, status). One
+accent colour, used sparingly. Fonts are downloaded, subsetted and self-hosted
+at build time, so the page makes no third-party requests at runtime.
+
+The only entrance effect is a scroll reveal: anything marked `data-reveal`
+fades up the first time it enters the viewport (`ScrollReveal.astro`). It is
+skipped entirely for readers who prefer reduced motion, and content is only
+ever hidden once a script has confirmed it can show it again, so the page
+never renders blank if JavaScript fails.
 
 Dark mode follows the system preference and can be overridden with the toggle
 in the masthead.

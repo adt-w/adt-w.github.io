@@ -23,7 +23,7 @@ interface Props {
 const { label, sublabel, rule = true, id } = Astro.props;
 ---
 
-<div class:list={['row', rule && 'row--ruled']} id={id}>
+<div class:list={['row', rule && 'row--ruled']} id={id} data-reveal>
 	<div class="row__meta">
 		<span class="u-mono row__label">{label}</span>
 		{sublabel && <span class="u-label row__sublabel">{sublabel}</span>}

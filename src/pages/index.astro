@@ -90,12 +90,12 @@ const activeCount = projects.filter((p) => p.data.status !== 'complete').length;
 	</Section>
 
 	<Section index="06" title="Contact" id="contact">
-		<p class="contact__lead u-measure-wide">
+		<p class="contact__lead u-measure-wide" data-reveal>
 			Open to co-op terms, and happy to talk about anything above, especially
 			the parts that didn't work.
 		</p>
 
-		<ul class="contact__list">
+		<ul class="contact__list" data-reveal>
 			{
 				contact.map((channel) => (
 					<li class="contact__item">
@@ -108,10 +108,14 @@ const activeCount = projects.filter((p) => p.data.status !== 'complete').length;
 			}
 		</ul>
 
-		<a class="contact__resume" href={url('/resume')}>
-			Read the resume
-			<span aria-hidden="true">→</span>
-		</a>
+		{/* Revealed through a wrapper: the link has its own hover transition,
+		    and marking it directly would let one transition override the other. */}
+		<div class="contact__action" data-reveal>
+			<a class="contact__resume" href={url('/resume')}>
+				Read the resume
+				<span aria-hidden="true">→</span>
+			</a>
+		</div>
 	</Section>
 </BaseLayout>
 
@@ -142,11 +146,14 @@ const activeCount = projects.filter((p) => p.data.status !== 'complete').length;
 		letter-spacing: var(--tr-mono);
 	}
 
+	.contact__action {
+		margin-block-start: var(--s-6);
+	}
+
 	.contact__resume {
 		display: inline-flex;
 		align-items: center;
 		gap: var(--s-2);
-		margin-block-start: var(--s-6);
 		padding: var(--s-3) var(--s-5);
 		border: var(--rule-hair) solid var(--ink);
 		font-family: var(--font-mono);
@@ -165,8 +172,8 @@ const activeCount = projects.filter((p) => p.data.status !== 'complete').length;
 		border-color: var(--accent);
 	}
 
-	/* The arrow carries the only movement on the page, and only on a direct
-	   interaction — never as an entrance effect. */
+	/* A small nudge on direct interaction. Kept separate from the scroll
+	   reveal, which only ever runs once per element. */
 	.contact__resume span {
 		transition: transform var(--dur-fast) var(--ease);
 	}

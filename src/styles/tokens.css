@@ -5,8 +5,10 @@
 
    House rules for the whole site, enforced by having no token for them:
      · no gradients          · no drop shadows
-     · no border radius      · no decorative animation
+     · no border radius      · no bounce or overshoot
    Hierarchy is made with type size, weight, space and hairline rules.
+   The one entrance effect is the scroll reveal: a short fade with a small
+   upward drift, disabled for anyone who has asked for reduced motion.
    ========================================================================== */
 
 :root {
@@ -109,11 +111,16 @@
 	--rule-heavy: 2px;
 
 	/* ── Motion ────────────────────────────────────────────────────────────
-	   Interface feedback only: hover, focus, disclosure. Nothing enters the
-	   viewport with a flourish. */
+	   Two kinds only. Interface feedback (hover, focus, disclosure) is fast.
+	   The scroll reveal is slower and decelerates hard, so content settles
+	   into place rather than sliding. Neither curve overshoots its target. */
 	--ease: cubic-bezier(0.2, 0, 0, 1);
+	--ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 	--dur-fast: 120ms;
 	--dur-base: 200ms;
+	--dur-reveal: 700ms;
+	/* Kept small: enough to read as arriving, not enough to read as moving. */
+	--reveal-shift: 0.75rem;
 
 	/* ── Focus ─────────────────────────────────────────────────────────────*/
 	--focus-ring: var(--accent);
