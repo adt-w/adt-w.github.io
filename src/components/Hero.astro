@@ -1,18 +1,32 @@
 ---
 /**
- * Opening block: name set as display type, then the professional summary
- * placed in the same two-column ledger grid as every other entry, so the
- * page establishes its one structural idea immediately.
+ * Opening block: the name set as display type, then two ledger rows. The
+ * first defines the discipline the role line names; the second is the
+ * summary. Both use the page's two-column grid, so the page establishes
+ * its one structural idea straight away.
+ *
+ * The name is never faded in. It is the largest paint on the page, and
+ * holding it back would delay the moment the page looks loaded.
  */
-import { site, summary } from '../data/site';
+import { site, summary, discipline } from '../data/site';
 ---
 
 <section class="hero" id="summary" aria-labelledby="hero-name">
 	<h1 class="hero__name" id="hero-name">Aditya<br />Wadhwa</h1>
 
-	<p class="u-label hero__role">{site.role}</p>
+	<p class="u-label hero__role" data-reveal>{site.role}</p>
 
-	<div class="hero__body">
+	<div class="hero__row hero__row--definition" data-reveal>
+		<div class="hero__aside">
+			<span class="u-label">The discipline</span>
+		</div>
+
+		<p class="hero__definition">
+			<dfn class="hero__term">{discipline.term}</dfn>{discipline.definition}
+		</p>
+	</div>
+
+	<div class="hero__row" data-reveal>
 		<div class="hero__aside">
 			<span class="u-label">Summary</span>
 		</div>
@@ -45,11 +59,36 @@ import { site, summary } from '../data/site';
 		color: var(--ink);
 	}
 
-	.hero__body {
+	.hero__row {
 		display: grid;
 		grid-template-columns: var(--col-label) 1fr;
 		gap: var(--grid-gap);
 		margin-block-start: var(--s-7);
+	}
+
+	/* The definition sits close under the role line it explains, then a
+	   hairline hands over to the summary. */
+	.hero__row--definition {
+		margin-block-start: var(--s-5);
+		padding-block-end: var(--s-6);
+		border-block-end: var(--rule-hair) solid var(--rule);
+	}
+
+	.hero__row--definition + .hero__row {
+		margin-block-start: var(--s-6);
+	}
+
+	.hero__definition {
+		max-width: var(--measure-wide);
+		color: var(--ink-2);
+	}
+
+	/* A <dfn> is italic by default. Here the term is marked by weight and
+	   colour instead, which is how emphasis works everywhere else on the page. */
+	.hero__term {
+		font-style: normal;
+		font-weight: var(--fw-medium);
+		color: var(--ink);
 	}
 
 	.hero__prose {
@@ -73,9 +112,9 @@ import { site, summary } from '../data/site';
 	}
 
 	@media (max-width: 40rem) {
-		.hero__body {
+		.hero__row {
 			grid-template-columns: 1fr;
-			gap: var(--s-4);
+			gap: var(--s-3);
 		}
 	}
 </style>

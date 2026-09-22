@@ -36,6 +36,13 @@
 		background: #fff;
 	}
 
+	/* Paper has no scroll. Anything still waiting to be revealed when the
+	   reader hits print must come out fully visible. */
+	[data-reveal] {
+		opacity: 1 !important;
+		transform: none !important;
+	}
+
 	/* ── Remove interface chrome ────────────────────────────────────────── */
 	.masthead,
 	.skip-link,
@@ -63,7 +70,7 @@
 	/* ── Collapse the ledger to one column ──────────────────────────────── */
 	.row,
 	.section__head,
-	.hero__body {
+	.hero__row {
 		display: block !important;
 	}
 
@@ -92,7 +99,7 @@
 		font-size: 26pt;
 	}
 
-	.hero__body {
+	.hero__row {
 		margin-block-start: 4mm;
 	}
 
