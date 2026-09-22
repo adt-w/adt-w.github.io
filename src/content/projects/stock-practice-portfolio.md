@@ -1,13 +1,13 @@
 ---
-title: Stock Practice Portfolio
+title: Mock Stock Portfolio
 blurb: A desktop trading simulator for testing strategies with no money at risk.
 status: complete
-start: 2024-12
+start: 2025-02
 end: 2025-02
-stack: [Python, yahooquery, Matplotlib, tkinter, NumPy]
+stack: [Python, yahooquery, NumPy, tkinter, Matplotlib]
 repo: https://github.com/adt-w/stockpracticeportfolio
 highlights:
-  - Builds and manages mock portfolios against live market data pulled through the yahooquery API, letting a strategy be tested over real price movement before any capital is committed.
-  - Cut asset research time by roughly 40% with a screener that filters holdings on P/E ratio, ESG score and growth metrics in a single pass.
+  - Created a real-time trading simulator for risk-free strategy testing by connecting the YahooQuery API to a Python and NumPy backend built for fast data processing.
+  - Cut asset research time by roughly 45% with a dynamic screener that filters holdings on P/E ratio, ESG score, debt-to-equity and return-on-equity ratios, and growth metrics.
   - Renders position and performance breakdowns natively in a tkinter interface via Matplotlib, so the whole tool runs as one local desktop application with no web dependency.
 ---

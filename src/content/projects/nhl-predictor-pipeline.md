@@ -2,7 +2,7 @@
 title: NHL Predictor Pipeline
 blurb: A season-projection pipeline for the 2026-27 NHL season, and an honest account of why prior-season team strength barely predicts a single hockey game.
 status: active
-start: 2026-01
+start: 2026-09
 end: null
 featured: true
 stack: [Python, scikit-learn, pandas, NumPy]

@@ -9,6 +9,9 @@
  * Embedded PDFs are unreliable on mobile and in some browsers, so the frame
  * carries a real fallback rather than assuming it renders.
  */
+import { statSync } from 'node:fs';
+import { join } from 'node:path';
+
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Section from '../components/Section.astro';
 import { site } from '../data/site';
@@ -16,8 +19,15 @@ import { url } from '../lib/url';
 
 const FILE = url('/aditya-wadhwa-resume.pdf');
 
-/** Shown beside the download so the size is not a surprise on mobile data. */
-const SIZE = '106 KB';
+/**
+ * Shown beside the download so the size is not a surprise on mobile data.
+ * Read from the file at build time, so replacing the PDF can never leave a
+ * stale figure behind. Builds always run from the project root.
+ */
+const bytes = statSync(join(process.cwd(), 'public', 'aditya-wadhwa-resume.pdf')).size;
+const SIZE = `${Math.round(bytes / 1024)} KB`;
+
+/** Set by hand: file timestamps are rewritten on every CI checkout. */
 const UPDATED = 'September 2026';
 ---
 
@@ -29,7 +39,7 @@ const UPDATED = 'September 2026';
 		<header class="resume__head">
 			<h1 class="resume__title">Resume</h1>
 
-			<div class="resume__meta">
+			<div class="resume__meta" data-reveal>
 				<div class="resume__field">
 					<span class="u-label">Updated</span>
 					<span class="u-mono">{UPDATED}</span>
@@ -40,7 +50,7 @@ const UPDATED = 'September 2026';
 				</div>
 			</div>
 
-			<div class="resume__actions">
+			<div class="resume__actions" data-reveal>
 				<a class="resume__action resume__action--primary" href={FILE} download>
 					Download PDF
 					<span aria-hidden="true">↓</span>
@@ -52,7 +62,7 @@ const UPDATED = 'September 2026';
 			</div>
 		</header>
 
-		<div class="resume__frame">
+		<div class="resume__frame" data-reveal>
 			<object class="resume__object" data={FILE} type="application/pdf">
 				{/* Reached when the browser cannot render a PDF inline — which is
 				    most mobile browsers. */}

@@ -1,12 +1,12 @@
 ---
 org: Privy Council Office
-role: Student Data Analyst
+role: Data Analyst/Engineer
 location: Ottawa, ON
 start: 2026-05
 end: 2026-08
-tags: [Tableau, Power BI, Python, Power Query]
+tags: [Tableau Server, Power BI, Python, Power Query, ETL]
 highlights:
-  - Built interactive employment equity dashboards in Tableau and Power BI, letting directors across the Corporate Services Branch identify workforce representation gaps and track progress against federal targets without an analyst in the room.
-  - Cut preparation time for monthly ministerial regional office tracking reports by roughly 40% by automating the recurring data cleaning and report generation steps in Python and Power Query.
-  - Translated workforce findings for non-technical stakeholders through structured walkthroughs and plain-language summaries, so directors could act on equity trends directly.
+  - Built interactive employment equity dashboards in Tableau Server and Power BI, used regularly by Corporate Services Branch directors and PCO executives to identify workforce representation gaps and monitor progress on inclusion goals.
+  - Cut manual preparation time for finance tracking reports (overtime, 10 to 15 year projections, monthly and quarterly) by roughly 40% by automating the recurring data cleaning and report generation in Python and Power Query.
+  - Ran ETL in Power Query to extract and transform ministerial regional office data into dashboards and structured walkthroughs for CSB executive directors and directors general.
 ---

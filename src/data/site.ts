@@ -30,6 +30,19 @@ export const summary: readonly string[] = [
 ] as const;
 
 /**
+ * What the degree actually is. Most readers have not met the discipline, and
+ * the role line above the summary names it without explaining it.
+ *
+ * Split into term and remainder only so the term can be marked up as a
+ * <dfn>; joined, the two read exactly as supplied.
+ */
+export const discipline = {
+	term: 'Management engineering',
+	definition:
+		' is a discipline that integrates knowledge from the areas of software and information systems, advanced data analytics and operations research, and organization science.',
+} as const;
+
+/**
  * Contact channels.
  *
  * `phone` from the resume is deliberately omitted. This site is reachable by
@@ -55,35 +68,51 @@ export const contact = [
 ] as const;
 
 /**
- * Skills, grouped. Order within a group is roughly by depth, not alphabetical
- * — the first few in each row are the ones worth asking about.
+ * Skills, grouped the same way as the resume so the two never disagree.
+ * Order within a group is roughly by depth, not alphabetical.
  */
 export const skills = [
 	{
 		group: 'Languages',
-		items: ['Python', 'SQL', 'JavaScript', 'HTML/CSS', 'Ruby', 'VBA'],
+		items: ['Python', 'TypeScript/JavaScript', 'HTML/CSS', 'SQL', 'R', 'Ruby', 'VBA'],
 	},
 	{
-		group: 'Data & ML',
+		group: 'Frameworks & AI',
+		items: [
+			'React (DOM)',
+			'Vite',
+			'Flask',
+			'Ruby on Rails',
+			'Llama API',
+			'LangChain',
+			'RAG',
+			'MCP',
+			'RandomForest',
+		],
+	},
+	{
+		group: 'Libraries',
 		items: [
 			'pandas',
 			'NumPy',
 			'scikit-learn',
 			'Matplotlib',
-			'BeautifulSoup',
+			'OpenLayers',
+			'Three.js',
+			'millify',
+			'tkinter',
 			'yahooquery',
 		],
 	},
 	{
-		group: 'Frameworks',
-		items: ['Flask', 'React', 'Ruby on Rails', 'Three.js', 'tkinter'],
-	},
-	{
-		group: 'Analytics',
-		items: ['Power BI', 'Tableau', 'Power Query', 'Excel / Macros'],
-	},
-	{
-		group: 'Tooling',
-		items: ['git', 'GitHub', 'Docker', 'Kubernetes', 'VS Code', 'PyCharm'],
+		group: 'Developer tools',
+		items: [
+			'git/GitHub',
+			'Docker',
+			'Kubernetes',
+			'Power BI/Service',
+			'Tableau Desktop/Server',
+			'Claude Code',
+		],
 	},
 ] as const;
