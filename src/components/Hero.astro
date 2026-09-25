@@ -52,9 +52,11 @@ import { site, summary, discipline } from '../data/site';
 		margin-inline-start: -0.045em;
 	}
 
+	/* The role line belongs to the name above it, so it sits closer to the
+	   name than the definition below sits to the role line. */
 	.hero__role {
-		margin-block-start: var(--s-6);
-		padding-block-start: var(--s-4);
+		margin-block-start: var(--space-group);
+		padding-block-start: var(--space-related);
 		border-block-start: var(--rule-heavy) solid var(--rule-strong);
 		color: var(--ink);
 	}
@@ -63,19 +65,19 @@ import { site, summary, discipline } from '../data/site';
 		display: grid;
 		grid-template-columns: var(--col-label) 1fr;
 		gap: var(--grid-gap);
-		margin-block-start: var(--s-7);
+		margin-block-start: calc(var(--space-module) / 2);
 	}
 
 	/* The definition sits close under the role line it explains, then a
 	   hairline hands over to the summary. */
 	.hero__row--definition {
-		margin-block-start: var(--s-5);
-		padding-block-end: var(--s-6);
+		margin-block-start: var(--space-group);
+		padding-block-end: calc(var(--space-module) / 2);
 		border-block-end: var(--rule-hair) solid var(--rule);
 	}
 
 	.hero__row--definition + .hero__row {
-		margin-block-start: var(--s-6);
+		margin-block-start: calc(var(--space-module) / 2);
 	}
 
 	.hero__definition {
@@ -100,7 +102,7 @@ import { site, summary, discipline } from '../data/site';
 	}
 
 	.hero__p + .hero__p {
-		margin-block-start: var(--s-4);
+		margin-block-start: var(--space-related);
 	}
 
 	/* The first paragraph carries slightly more weight and size so the eye

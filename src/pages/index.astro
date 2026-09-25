@@ -125,19 +125,22 @@ const activeCount = projects.filter((p) => p.data.status === 'active').length;
 		line-height: var(--lh-snug);
 	}
 
+	/* Channels are items in one group: spaced from each other by less than
+	   the group is spaced from the lead above it. */
 	.contact__list {
 		display: flex;
 		flex-wrap: wrap;
-		gap: var(--s-6) var(--s-8);
-		margin-block-start: var(--s-6);
-		padding-block-start: var(--s-5);
+		gap: var(--space-group) var(--space-module);
+		margin-block-start: var(--space-group);
+		padding-block-start: var(--space-group);
 		border-block-start: var(--rule-hair) solid var(--rule);
 	}
 
+	/* A label and the address it names are one thing. */
 	.contact__item {
 		display: flex;
 		flex-direction: column;
-		gap: var(--s-2);
+		gap: var(--space-bound);
 	}
 
 	.contact__value {
@@ -147,14 +150,14 @@ const activeCount = projects.filter((p) => p.data.status === 'active').length;
 	}
 
 	.contact__action {
-		margin-block-start: var(--s-6);
+		margin-block-start: var(--space-group);
 	}
 
 	.contact__resume {
 		display: inline-flex;
 		align-items: center;
-		gap: var(--s-2);
-		padding: var(--s-3) var(--s-5);
+		gap: var(--space-related);
+		padding: var(--space-related) var(--space-group);
 		border: var(--rule-hair) solid var(--ink);
 		font-family: var(--font-mono);
 		font-size: var(--fs-2xs);

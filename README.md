@@ -120,6 +120,17 @@ IBM Plex Mono carries the metadata layer (dates, tags, indices, status). One
 accent colour, used sparingly. Fonts are downloaded, subsetted and self-hosted
 at build time, so the page makes no third-party requests at runtime.
 
+Layout is modular: every job, project and credential renders through one
+entry module (`Entry.astro`) inside one ledger row, aligned to the same
+two-column grid, so equivalent parts always sit at equivalent distances.
+
+Spacing carries the grouping. The scale in `tokens.css` is named for the
+relationship each step expresses (`--space-bound`, `--space-related`,
+`--space-group`, `--space-module`, `--space-section`) rather than for its size,
+and the rule it enforces is that the distance inside a thing is always smaller
+than the distance around it: at most 24px within an entry against 64px between
+entries.
+
 The only entrance effect is a scroll reveal: anything marked `data-reveal`
 fades up the first time it enters the viewport (`ScrollReveal.astro`). It is
 skipped entirely for readers who prefer reduced motion, and content is only
