@@ -1,12 +1,13 @@
 ---
 /**
- * One project. Same ledger row as an experience entry, with three additions:
- * a status chip, a measured-results block, and links out to the source.
+ * One project: the shared entry module, plus the three things only a project
+ * has — a status marker, measured results, and links out to the source.
  */
 import type { CollectionEntry } from 'astro:content';
 import { render } from 'astro:content';
 
 import LedgerRow from './LedgerRow.astro';
+import Entry from './Entry.astro';
 import TagList from './TagList.astro';
 import HighlightList from './HighlightList.astro';
 import StatusChip from './StatusChip.astro';
@@ -27,23 +28,16 @@ const { Content } = await render(entry);
 const hasNote = entry.body !== undefined && entry.body.trim().length > 0;
 ---
 
-<LedgerRow
-	label={formatRange(start, end)}
-	rule={!first}
-	id={`proj-${entry.id}`}
->
-	<div class="project">
-		<div class="project__head">
-			<h3 class:list={['project__title', featured && 'project__title--lead']}>{title}</h3>
-			{status === 'active' && <StatusChip />}
-		</div>
+<LedgerRow label={formatRange(start, end)} rule={!first} id={`proj-${entry.id}`}>
+	<Entry
+		title={title}
+		subtitle={blurb}
+		lead={featured}
+		spokenDates={formatRangeLong(start, end)}
+	>
+		{status === 'active' && <StatusChip slot="status" />}
 
-		<p class="project__blurb">{blurb}</p>
-		<span class="visually-hidden">{formatRangeLong(start, end)}</span>
-
-		<div class="project__stack">
-			<TagList items={stack} label={`Built with`} />
-		</div>
+		<TagList items={stack} label="Built with" slot="meta" />
 
 		{metrics.length > 0 && <MetricGrid metrics={metrics} />}
 
@@ -59,7 +53,7 @@ const hasNote = entry.body !== undefined && entry.body.trim().length > 0;
 
 		{
 			(repo || demo) && (
-				<div class="project__links">
+				<div class="project__links" slot="foot">
 					{repo && (
 						<a class="project__link" href={repo} rel="noopener">
 							Source
@@ -79,45 +73,15 @@ const hasNote = entry.body !== undefined && entry.body.trim().length > 0;
 				</div>
 			)
 		}
-	</div>
+	</Entry>
 </LedgerRow>
 
 <style>
-	.project__head {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: baseline;
-		gap: var(--s-3) var(--s-4);
-	}
-
-	.project__title {
-		font-size: var(--fs-lg);
-		font-weight: var(--fw-medium);
-		letter-spacing: var(--tr-tight);
-	}
-
-	/* Featured work carries more type weight so the section has a shape.
-	   Six entries set identically read as a list to scroll past; a couple
-	   given prominence gives the eye somewhere to start. */
-	.project__title--lead {
-		font-size: var(--fs-xl);
-	}
-
-	.project__blurb {
-		margin-block-start: var(--s-2);
-		max-width: var(--measure-wide);
-		color: var(--ink-2);
-	}
-
-	.project__stack {
-		margin-block-start: var(--s-4);
-	}
-
-	/* A closing note set against a hairline, for the one or two sentences
-	   that explain the state of the work rather than its results. */
+	/* A closing note set against a hairline, for the sentence or two that
+	   explains the state of the work rather than its results. */
 	.project__note {
-		margin-block-start: var(--s-5);
-		padding-inline-start: var(--s-5);
+		margin-block-start: var(--space-group);
+		padding-inline-start: var(--space-group);
 		border-inline-start: var(--rule-hair) solid var(--rule);
 		max-width: var(--measure-wide);
 		font-size: var(--fs-sm);
@@ -126,20 +90,19 @@ const hasNote = entry.body !== undefined && entry.body.trim().length > 0;
 	}
 
 	.project__note :global(p + p) {
-		margin-block-start: var(--s-3);
+		margin-block-start: var(--space-related);
 	}
 
 	.project__links {
 		display: flex;
 		flex-wrap: wrap;
-		gap: var(--s-5);
-		margin-block-start: var(--s-5);
+		gap: var(--space-group);
 	}
 
 	.project__link {
 		display: inline-flex;
 		align-items: center;
-		gap: var(--s-2);
+		gap: var(--space-bound);
 		font-family: var(--font-mono);
 		font-size: var(--fs-xs);
 		font-weight: var(--fw-medium);

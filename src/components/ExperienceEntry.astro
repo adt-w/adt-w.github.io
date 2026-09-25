@@ -1,11 +1,12 @@
 ---
 /**
- * One role. Rendered as a ledger row: dates and location in the metadata
- * column, everything else in the content column.
+ * One role, rendered as the shared entry module inside a ledger row: dates
+ * and location in the metadata column, everything else in the content column.
  */
 import type { CollectionEntry } from 'astro:content';
 
 import LedgerRow from './LedgerRow.astro';
+import Entry from './Entry.astro';
 import TagList from './TagList.astro';
 import HighlightList from './HighlightList.astro';
 import { formatRange, formatRangeLong } from '../lib/dates';
@@ -26,33 +27,8 @@ const { org, role, location, start, end, tags, highlights } = entry.data;
 	rule={!first}
 	id={`exp-${entry.id}`}
 >
-	<div class="entry">
-		<h3 class="entry__org">{org}</h3>
-		<p class="entry__role">{role}</p>
-
-		{/* The numeric range is compact but hard to read aloud, so the prose
-		    form is exposed to screen readers only. */}
-		<span class="visually-hidden">{formatRangeLong(start, end)}</span>
-
-		{tags.length > 0 && <div class="entry__tags"><TagList items={tags} /></div>}
-
+	<Entry title={org} subtitle={role} spokenDates={formatRangeLong(start, end)}>
+		{tags.length > 0 && <TagList items={tags} slot="meta" />}
 		<HighlightList items={highlights} />
-	</div>
+	</Entry>
 </LedgerRow>
-
-<style>
-	.entry__org {
-		font-size: var(--fs-lg);
-		font-weight: var(--fw-medium);
-		letter-spacing: var(--tr-tight);
-	}
-
-	.entry__role {
-		margin-block-start: var(--s-1);
-		color: var(--ink-2);
-	}
-
-	.entry__tags {
-		margin-block-start: var(--s-4);
-	}
-</style>

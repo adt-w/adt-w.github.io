@@ -1,12 +1,13 @@
 ---
 /**
- * One credential. Structurally identical to an experience entry, kept
- * separate because the fields differ and conflating them would mean a
- * schema that is half-empty for both.
+ * One credential. Structurally the same module as a role or a project; the
+ * fields differ, which is why the collection is separate, but the shape a
+ * reader sees is identical.
  */
 import type { CollectionEntry } from 'astro:content';
 
 import LedgerRow from './LedgerRow.astro';
+import Entry from './Entry.astro';
 import HighlightList from './HighlightList.astro';
 import { formatRange, formatRangeLong } from '../lib/dates';
 
@@ -25,21 +26,11 @@ const { institution, credential, location, start, end, detail } = entry.data;
 	rule={!first}
 	id={`edu-${entry.id}`}
 >
-	<h3 class="edu__institution">{institution}</h3>
-	<p class="edu__credential">{credential}</p>
-	<span class="visually-hidden">{formatRangeLong(start, end)}</span>
-	{detail.length > 0 && <HighlightList items={detail} />}
+	<Entry
+		title={institution}
+		subtitle={credential}
+		spokenDates={formatRangeLong(start, end)}
+	>
+		{detail.length > 0 && <HighlightList items={detail} />}
+	</Entry>
 </LedgerRow>
-
-<style>
-	.edu__institution {
-		font-size: var(--fs-lg);
-		font-weight: var(--fw-medium);
-		letter-spacing: var(--tr-tight);
-	}
-
-	.edu__credential {
-		margin-block-start: var(--s-1);
-		color: var(--ink-2);
-	}
-</style>

@@ -1,0 +1,94 @@
+---
+/**
+ * The entry module.
+ *
+ * A job, a project and a credential are the same rectangle: a title, an
+ * optional line naming what it was, an optional row of metadata, a body, and
+ * an optional foot of links. They were three components that each invented
+ * their own internal spacing, so equivalent parts sat at different distances
+ * depending on which section you were reading.
+ *
+ * All the vertical rhythm inside an entry is decided here, from the
+ * relationship scale in tokens.css, and every step is smaller than the
+ * --space-module distance LedgerRow puts between entries. That is what keeps
+ * the parts of one entry looking like each other's rather than the next
+ * entry's.
+ */
+
+interface Props {
+	title: string;
+	/** The role, credential or one-line description sitting under the title. */
+	subtitle?: string;
+	/** Renders the title a step larger, for work that should lead a section. */
+	lead?: boolean;
+	/** Prose form of the dates, for screen readers only. */
+	spokenDates?: string;
+}
+
+const { title, subtitle, lead = false, spokenDates } = Astro.props;
+
+const hasStatus = Astro.slots.has('status');
+const hasMeta = Astro.slots.has('meta');
+const hasFoot = Astro.slots.has('foot');
+---
+
+<div class="entry">
+	<div class="entry__head">
+		<h3 class:list={['entry__title', lead && 'entry__title--lead']}>{title}</h3>
+		{hasStatus && <slot name="status" />}
+	</div>
+
+	{subtitle && <p class="entry__subtitle">{subtitle}</p>}
+
+	{/* The metadata column shows a compact numeric range that does not read
+	    aloud well, so the prose form is exposed here instead. */}
+	{spokenDates && <span class="visually-hidden">{spokenDates}</span>}
+
+	{hasMeta && <div class="entry__meta"><slot name="meta" /></div>}
+
+	<div class="entry__body"><slot /></div>
+
+	{hasFoot && <div class="entry__foot"><slot name="foot" /></div>}
+</div>
+
+<style>
+	/* Title and status sit on one line and belong to each other, so the gap
+	   between them is the tightest on the page. */
+	.entry__head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: var(--space-bound) var(--space-related);
+	}
+
+	.entry__title {
+		font-size: var(--fs-lg);
+		font-weight: var(--fw-medium);
+		letter-spacing: var(--tr-tight);
+	}
+
+	.entry__title--lead {
+		font-size: var(--fs-xl);
+	}
+
+	/* Bound to the title: a subtitle that drifts reads as a separate remark. */
+	.entry__subtitle {
+		margin-block-start: var(--space-bound);
+		max-width: var(--measure-wide);
+		color: var(--ink-2);
+	}
+
+	/* Still part of the heading group, one step out. */
+	.entry__meta {
+		margin-block-start: var(--space-related);
+	}
+
+	/* A separate idea within the same entry. */
+	.entry__body:not(:empty) {
+		margin-block-start: var(--space-group);
+	}
+
+	.entry__foot:not(:empty) {
+		margin-block-start: var(--space-group);
+	}
+</style>
