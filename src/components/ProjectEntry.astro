@@ -35,7 +35,7 @@ const hasNote = entry.body !== undefined && entry.body.trim().length > 0;
 	<div class="project">
 		<div class="project__head">
 			<h3 class:list={['project__title', featured && 'project__title--lead']}>{title}</h3>
-			<StatusChip status={status} />
+			{status === 'active' && <StatusChip />}
 		</div>
 
 		<p class="project__blurb">{blurb}</p>

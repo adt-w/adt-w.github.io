@@ -40,7 +40,7 @@ const projects = projectsRaw.sort((a, b) => {
 	return byNewest(a.data, b.data);
 });
 
-const activeCount = projects.filter((p) => p.data.status !== 'complete').length;
+const activeCount = projects.filter((p) => p.data.status === 'active').length;
 ---
 
 <BaseLayout title={site.title} description={site.description}>
@@ -72,7 +72,7 @@ const activeCount = projects.filter((p) => p.data.status !== 'complete').length;
 		index="03"
 		title="Projects"
 		id="projects"
-		note={activeCount > 0 ? `${projects.length} — ${activeCount} in progress` : `${projects.length}`}
+		note={activeCount > 0 ? `${projects.length} · ${activeCount} in progress` : `${projects.length}`}
 	>
 		{projects.map((entry, i) => <ProjectEntry entry={entry} first={i === 0} />)}
 	</Section>

@@ -37,12 +37,15 @@ const experience = defineCollection({
 });
 
 /**
- * Project status drives the chip shown beside the title.
- *   active   — being worked on right now
- *   early    — scaffolded, little or no code yet
+ * Project status.
+ *   active   — being worked on right now, and the only state that is labelled
  *   complete — finished and not being extended
+ *
+ * Complete is the resting state of almost everything here, so it is left
+ * unmarked: a label repeated on five of six entries carries no information
+ * and only competes with the titles it sits beside.
  */
-const projectStatus = z.enum(['active', 'early', 'complete']);
+const projectStatus = z.enum(['active', 'complete']);
 
 const projects = defineCollection({
 	loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),

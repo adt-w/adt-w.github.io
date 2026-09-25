@@ -7,24 +7,16 @@
  * project findable in a long scroll without any animation.
  */
 
-type Status = 'active' | 'early' | 'complete';
-
-interface Props {
-	status: Status;
-}
-
-const { status } = Astro.props;
-
-const COPY: Record<Status, string> = {
-	active: 'In progress',
-	early: 'Early stage',
-	complete: 'Complete',
-};
+/**
+ * Marks work that is still moving. Only rendered for active projects; a
+ * finished one says nothing, because "complete" is the assumption a reader
+ * already brings to a portfolio.
+ */
 ---
 
-<span class:list={['chip', `chip--${status}`]}>
+<span class="chip">
 	<span class="chip__mark" aria-hidden="true"></span>
-	<span class="chip__text">{COPY[status]}</span>
+	<span class="chip__text">In progress</span>
 </span>
 
 <style>
@@ -46,23 +38,9 @@ const COPY: Record<Status, string> = {
 		background-color: currentColor;
 	}
 
-	/* Only work that is genuinely live gets the accent. Spending the one
-	   loud colour on everything would make it mean nothing. */
-	.chip--active {
+	/* The accent is spent here and almost nowhere else. It only means
+	   something because so little else carries it. */
+	.chip {
 		color: var(--accent);
-	}
-
-	.chip--early {
-		color: var(--ink-3);
-	}
-
-	.chip--complete {
-		color: var(--ink-3);
-	}
-
-	/* An outlined square reads as "not yet filled in" for early work. */
-	.chip--early .chip__mark {
-		background-color: transparent;
-		box-shadow: inset 0 0 0 1px currentColor;
 	}
 </style>
