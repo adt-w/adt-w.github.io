@@ -154,8 +154,8 @@ const TYPE_LABEL: Record<EventType, string> = {
 	.chrono__controls {
 		display: flex;
 		flex-wrap: wrap;
-		gap: var(--s-5);
-		margin-block-end: var(--s-6);
+		gap: var(--space-group);
+		margin-block-end: var(--space-related);
 	}
 
 	.chrono__filter {
@@ -185,11 +185,13 @@ const TYPE_LABEL: Record<EventType, string> = {
 	}
 
 	/* ── Ledger ────────────────────────────────────────────────────────────*/
+	/* Year groups are the modules of this ledger, so they take the outer
+	   distance; the rows inside them sit closer together than this. */
 	.chrono__year {
 		display: grid;
 		grid-template-columns: var(--col-label) 1fr;
 		gap: var(--grid-gap);
-		padding-block: var(--s-5);
+		padding-block: calc(var(--space-module) / 2);
 		border-block-start: var(--rule-hair) solid var(--rule);
 	}
 
@@ -226,7 +228,7 @@ const TYPE_LABEL: Record<EventType, string> = {
 		   with margin and padding rather than a spread box-shadow means the
 		   row rule below lines up with the highlight exactly. */
 		margin-inline: calc(var(--s-4) * -1);
-		padding: var(--s-3) var(--s-4);
+		padding: var(--space-related) var(--space-group);
 		text-decoration: none;
 		transition: background-color var(--dur-fast) var(--ease);
 	}
@@ -245,7 +247,7 @@ const TYPE_LABEL: Record<EventType, string> = {
 	.chrono__when {
 		display: flex;
 		flex-direction: column;
-		gap: var(--s-1);
+		gap: var(--space-bound);
 	}
 
 	.chrono__span {
@@ -267,21 +269,24 @@ const TYPE_LABEL: Record<EventType, string> = {
 		color: var(--ink-3);
 	}
 
+	/* The caption describes the ledger, so it sits nearer the ledger than the
+	   filters sit to it. */
 	.chrono__caption {
-		margin-block-end: var(--s-4);
+		margin-block-end: var(--space-related);
+		padding-block-start: var(--space-group);
 	}
 
 	.chrono__content {
 		display: flex;
 		flex-direction: column;
-		gap: var(--s-1);
+		gap: var(--space-bound);
 		min-width: 0;
 	}
 
 	.chrono__title {
 		display: flex;
 		align-items: center;
-		gap: var(--s-2);
+		gap: var(--space-related);
 		font-weight: var(--fw-medium);
 		letter-spacing: var(--tr-tight);
 		color: var(--ink);
@@ -314,7 +319,7 @@ const TYPE_LABEL: Record<EventType, string> = {
 	}
 
 	.chrono__empty {
-		padding-block: var(--s-6);
+		padding-block: var(--space-group);
 		border-block-start: var(--rule-hair) solid var(--rule);
 		color: var(--ink-3);
 	}
@@ -331,9 +336,9 @@ const TYPE_LABEL: Record<EventType, string> = {
 			inset-inline-start: 0;
 			display: flex;
 			flex-direction: column;
-			gap: var(--s-2);
+			gap: var(--space-bound);
 			width: min(30rem, 100%);
-			padding: var(--s-4);
+			padding: var(--space-group);
 			background-color: var(--paper);
 			/* A hairline rather than a shadow, matching everything else here.
 			   The solid ground is what separates it from the rows beneath. */
@@ -372,7 +377,7 @@ const TYPE_LABEL: Record<EventType, string> = {
 		}
 
 		.chrono__card-cue {
-			margin-block-start: var(--s-1);
+			margin-block-start: var(--space-related);
 			font-family: var(--font-mono);
 			font-size: var(--fs-2xs);
 			font-weight: var(--fw-medium);
