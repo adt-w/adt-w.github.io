@@ -39,7 +39,10 @@ const { label, sublabel, rule = true, id } = Astro.props;
 		display: grid;
 		grid-template-columns: var(--col-label) 1fr;
 		gap: var(--grid-gap);
-		padding-block: var(--s-5);
+		/* Half the outer distance above and below, so two adjacent rows put a
+		   full --space-module between them. Every gap inside an entry is
+		   smaller than this by construction. */
+		padding-block: calc(var(--space-module) / 2);
 	}
 
 	.row--ruled {

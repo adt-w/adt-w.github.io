@@ -85,6 +85,26 @@
 	--s-9: 6rem; /* 96px */
 	--s-10: 8rem; /* 128px */
 
+	/* ── Proximity scale ───────────────────────────────────────────────────
+	   Spacing is what says which things belong together, so the steps are
+	   named for the relationship they express rather than for their size.
+	   The governing rule: the distance inside a thing must be smaller than
+	   the distance around it. Break that and the parts of one entry look
+	   like neighbours of the next.
+
+	       --space-bound    a label and the thing it labels
+	       --space-related  parts of one idea: title and its subtitle
+	       --space-group    separate ideas within one entry
+	       --space-module   between entries
+	       --space-section  between sections
+
+	   Each step is comfortably larger than the one before, so the hierarchy
+	   survives being read at a glance. */
+	--space-bound: var(--s-1); /*  4px */
+	--space-related: var(--s-3); /* 12px */
+	--space-group: var(--s-5); /* 24px */
+	--space-module: var(--s-8); /* 64px — outer, so it must beat every inner step */
+
 	/* Vertical rhythm between major sections, fluid with viewport. */
 	--space-section: clamp(3.5rem, 1.5rem + 7vw, 7.5rem);
 
