@@ -22,7 +22,7 @@ const { items, label = 'Tools and methods' } = Astro.props;
 	.tags {
 		display: flex;
 		flex-wrap: wrap;
-		gap: var(--s-2) var(--s-4);
+		gap: var(--space-bound) var(--space-related);
 		font-family: var(--font-mono);
 		font-size: var(--fs-xs);
 		letter-spacing: var(--tr-mono);
@@ -32,7 +32,7 @@ const { items, label = 'Tools and methods' } = Astro.props;
 	/* A hairline before each item except the first, standing in for a
 	   separator without adding a character that screen readers would announce. */
 	.tags__item + .tags__item {
-		padding-inline-start: var(--s-4);
+		padding-inline-start: var(--space-related);
 		border-inline-start: var(--rule-hair) solid var(--rule);
 	}
 </style>

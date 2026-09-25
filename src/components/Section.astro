@@ -73,8 +73,10 @@ const { index, title, id, note } = Astro.props;
 		letter-spacing: var(--tr-tight);
 	}
 
+	/* Combined with the first row's own padding this puts the heading closer
+	   to the entries it introduces than those entries are to one another. */
 	.section__body {
-		padding-block-start: var(--s-6);
+		padding-block-start: var(--space-group);
 	}
 
 	/* Below the label-column breakpoint the index moves above the title
