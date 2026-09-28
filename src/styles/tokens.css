@@ -26,8 +26,13 @@
 	--paper-sunk: #191a1d; /* recessed blocks, hovered rows */
 	--ink: #ededea; /* primary text, headings */
 	--ink-2: #adadb5; /* body copy set at length */
-	--ink-3: #7c7c85; /* metadata, captions, muted labels */
-	--rule: #2b2c30; /* hairline dividers between rows */
+	/* Cleared against the hovered surface too, not just the page ground:
+	   at #7c7c85 a muted label fell to 4.21:1 on a hovered chronology row. */
+	--ink-3: #82828b; /* metadata, captions, muted labels */
+	/* Dividers are decorative — every group they separate is also separated by
+	   space and a heading — so the 3:1 rule for meaningful UI does not apply.
+	   Lifted anyway, because a hairline this dark disappears on many screens. */
+	--rule: #33343a; /* hairline dividers between rows */
 	--rule-strong: #ededea; /* heavier rules that open a section */
 	--accent: #ff6a4d; /* vermillion, lifted to carry on a dark ground */
 	--accent-ink: #111113; /* text on the rare accent fill */
@@ -170,8 +175,9 @@
 	--paper-sunk: #f2f2ee;
 	--ink: #141416;
 	--ink-2: #55555c;
-	--ink-3: #77777f;
-	--rule: #e0e0da;
+	/* Also cleared against the hovered surface, matching the dark scheme. */
+	--ink-3: #6e6e76;
+	--rule: #d8d8d2;
 	--rule-strong: #141416;
 	--accent: #c2360f;
 	--accent-ink: #ffffff;
