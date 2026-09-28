@@ -137,5 +137,14 @@ skipped entirely for readers who prefer reduced motion, and content is only
 ever hidden once a script has confirmed it can show it again, so the page
 never renders blank if JavaScript fails.
 
-Dark mode follows the system preference and can be overridden with the toggle
-in the masthead.
+Dark is the site's own scheme and is served to everyone; the system preference
+is deliberately not consulted. The toggle in the masthead turns a light scheme
+on and remembers the choice. Both palettes are checked so that body text and
+muted labels clear 4.5:1 against the page ground *and* against the hovered
+surface they can sit on.
+
+The skills section is the one boxed region on the page. Each group is a
+container, and every skill names the project or role that used it, resolved
+from the stacks and tags already declared in the content (`lib/skills.ts`)
+rather than maintained by hand. Skills with nothing behind them on the page
+are shown muted, so the section claims no more than the work can evidence.
