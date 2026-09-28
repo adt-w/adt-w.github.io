@@ -1,0 +1,123 @@
+---
+/**
+ * Skills, as a grid of containers rather than a run of rows.
+ *
+ * A flat list sat oddly in a page where everything else is an entry with a
+ * date and a story. Containment is the fix: each group becomes its own
+ * module, so the section reads as a reference panel rather than as more
+ * entries that happen to have lost their dates.
+ *
+ * Each skill names the work that evidences it, which is what stops the list
+ * being an unsupported claim. Skills with nothing behind them on this page
+ * are still listed, just quietly.
+ */
+import { resolveSkills } from '../lib/skills';
+import { skills } from '../data/site';
+
+const groups = await resolveSkills(skills);
+---
+
+<div class="skills">
+	{
+		groups.map((group) => (
+			<section class="skills__group" aria-labelledby={`skills-${group.group}`}>
+				<h3 class="u-label skills__name" id={`skills-${group.group}`}>
+					{group.group}
+				</h3>
+
+				<dl class="skills__list">
+					{group.items.map((skill) => (
+						<div class="skills__row">
+							<dt class:list={['skills__skill', skill.usages.length === 0 && 'skills__skill--bare']}>
+								{skill.name}
+							</dt>
+
+							<dd class="skills__where">
+								{skill.usages.length === 1 && (
+									<a class="skills__link" href={skill.usages[0]!.href}>
+										{skill.usages[0]!.title}
+									</a>
+								)}
+								{skill.usages.length > 1 && (
+									<span class="skills__count">{skill.usages.length} entries</span>
+								)}
+							</dd>
+						</div>
+					))}
+				</dl>
+			</section>
+		))
+	}
+</div>
+
+<style>
+	/* Containers sit on the same grid as everything else and simply wrap when
+	   the viewport runs out, so the section needs no breakpoints of its own. */
+	.skills {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+		gap: var(--space-group);
+	}
+
+	/* The container: a hairline and a recessed ground, square like everything
+	   else here. This is the only boxed region on the page, which is what
+	   marks the section as reference rather than narrative. */
+	.skills__group {
+		padding: var(--space-group);
+		background-color: var(--paper-sunk);
+		border: var(--rule-hair) solid var(--rule);
+	}
+
+	.skills__name {
+		padding-block-end: var(--space-related);
+		border-block-end: var(--rule-hair) solid var(--rule);
+		color: var(--ink);
+	}
+
+	.skills__list {
+		margin: 0;
+		margin-block-start: var(--space-related);
+	}
+
+	/* Rows inside a container sit closer to each other than the containers do,
+	   so each group holds together as one object. */
+	.skills__row {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--space-bound) var(--space-related);
+	}
+
+	.skills__row + .skills__row {
+		margin-block-start: var(--space-related);
+	}
+
+	.skills__skill {
+		font-size: var(--fs-sm);
+		color: var(--ink);
+	}
+
+	/* Listed, but with nothing on this page behind it. Stated by weight
+	   rather than by a disclaimer. */
+	.skills__skill--bare {
+		color: var(--ink-3);
+	}
+
+	.skills__where {
+		margin: 0;
+		font-family: var(--font-mono);
+		font-size: var(--fs-2xs);
+		letter-spacing: var(--tr-mono);
+		text-align: end;
+		color: var(--ink-3);
+	}
+
+	.skills__link {
+		text-decoration-color: var(--rule);
+	}
+
+	.skills__count {
+		white-space: nowrap;
+	}
+</style>

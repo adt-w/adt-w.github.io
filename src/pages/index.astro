@@ -16,10 +16,11 @@ import Chronology from '../components/Chronology.astro';
 import ExperienceEntry from '../components/ExperienceEntry.astro';
 import ProjectEntry from '../components/ProjectEntry.astro';
 import EducationEntry from '../components/EducationEntry.astro';
-import SkillsGrid from '../components/SkillsGrid.astro';
-import { site, contact } from '../data/site';
+import SkillContainers from '../components/SkillContainers.astro';
+import { site, contact, skills } from '../data/site';
 import { byNewest } from '../lib/dates';
 import { url } from '../lib/url';
+import { resolveSkills } from '../lib/skills';
 
 const [experienceRaw, projectsRaw, educationRaw] = await Promise.all([
 	getCollection('experience'),
@@ -41,6 +42,14 @@ const projects = projectsRaw.sort((a, b) => {
 });
 
 const activeCount = projects.filter((p) => p.data.status === 'active').length;
+
+const resolvedSkills = await resolveSkills(skills);
+const skillTotal = resolvedSkills.reduce((n, g) => n + g.items.length, 0);
+const skillsUsed = resolvedSkills.reduce(
+	(n, g) => n + g.items.filter((s) => s.usages.length > 0).length,
+	0,
+);
+const skillsNote = `${skillTotal} · ${skillsUsed} used in the work above`;
 ---
 
 <BaseLayout title={site.title} description={site.description}>
@@ -77,8 +86,14 @@ const activeCount = projects.filter((p) => p.data.status === 'active').length;
 		{projects.map((entry, i) => <ProjectEntry entry={entry} first={i === 0} />)}
 	</Section>
 
-	<Section index="04" title="Skills" id="skills">
-		<SkillsGrid />
+	<Section index="04" title="Skills" id="skills" note={skillsNote}>
+		<p class="skills__caption u-measure-wide" data-reveal>
+			Each is listed against the work on this page that used it. The quieter
+			ones are tools I have worked with that none of the entries above happen
+			to show.
+		</p>
+
+		<SkillContainers />
 	</Section>
 
 	<Section index="05" title="Education" id="education">
@@ -120,6 +135,11 @@ const activeCount = projects.filter((p) => p.data.status === 'active').length;
 </BaseLayout>
 
 <style>
+	.skills__caption {
+		margin-block-end: var(--space-group);
+		color: var(--ink-2);
+	}
+
 	.contact__lead {
 		font-size: var(--fs-md);
 		line-height: var(--lh-snug);
