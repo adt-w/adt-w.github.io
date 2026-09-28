@@ -12,21 +12,26 @@
    ========================================================================== */
 
 :root {
-	color-scheme: light;
+	color-scheme: dark;
 
 	/* ── Colour ────────────────────────────────────────────────────────────
-	   A near-monochrome ink-on-paper palette with exactly one accent.
-	   The accent is used for emphasis and state, never as a large fill. */
-	--paper: #fbfbf9; /* page ground — warm off-white, not pure white */
-	--paper-sunk: #f2f2ee; /* recessed blocks, hovered rows */
-	--ink: #141416; /* primary text, headings */
-	--ink-2: #55555c; /* body copy set at length */
-	--ink-3: #8a8a92; /* metadata, captions, muted labels */
-	--rule: #e0e0da; /* hairline dividers between rows */
-	--rule-strong: #141416; /* heavier rules that open a section */
-	--accent: #cc3b1e; /* vermillion */
-	--accent-ink: #ffffff; /* text on the rare accent fill */
-	--accent-sunk: #f8ece8; /* accent tint for status chips */
+	   Dark is the site's own scheme, not a response to the reader's system
+	   setting, so it is declared here unconditionally. Light is available
+	   from the toggle in the masthead and is the only thing that overrides
+	   this block.
+
+	   A near-monochrome palette with exactly one accent, used for emphasis
+	   and state and never as a large fill. */
+	--paper: #111113; /* page ground — off-black, never pure black */
+	--paper-sunk: #191a1d; /* recessed blocks, hovered rows */
+	--ink: #ededea; /* primary text, headings */
+	--ink-2: #adadb5; /* body copy set at length */
+	--ink-3: #7c7c85; /* metadata, captions, muted labels */
+	--rule: #2b2c30; /* hairline dividers between rows */
+	--rule-strong: #ededea; /* heavier rules that open a section */
+	--accent: #ff6a4d; /* vermillion, lifted to carry on a dark ground */
+	--accent-ink: #111113; /* text on the rare accent fill */
+	--accent-sunk: #2b1712; /* accent tint */
 
 	/* ── Type families ─────────────────────────────────────────────────────
 	   Two families doing two jobs. The grotesque (Archivo) carries content;
@@ -148,42 +153,27 @@
 	--focus-offset: 3px;
 }
 
-/* ── Dark theme ─────────────────────────────────────────────────────────────
-   Only the colour tokens are redeclared; type, space and grid are invariant.
-   Declared twice so that the system preference and an explicit user choice
-   both resolve correctly:
-     · the media query handles the default "system" state
-     · the attribute selector lets a manual toggle win in either direction
-   The `:not([data-theme='light'])` guard keeps an explicit light choice from
-   being overridden by a dark system preference. */
-@media (prefers-color-scheme: dark) {
-	:root:not([data-theme='light']) {
-		color-scheme: dark;
+/* ── Light theme ────────────────────────────────────────────────────────────
+   The opt-in, chosen from the masthead toggle and remembered in
+   localStorage. Only the colour tokens are redeclared; type, space and grid
+   are invariant between the two.
 
-		--paper: #0f0f11;
-		--paper-sunk: #17171a;
-		--ink: #f0f0ec;
-		--ink-2: #a3a3ab;
-		--ink-3: #6e6e76;
-		--rule: #27272b;
-		--rule-strong: #f0f0ec;
-		--accent: #ff5c3d;
-		--accent-ink: #0f0f11;
-		--accent-sunk: #2a1611;
-	}
-}
+   The system preference is deliberately not consulted. The dark scheme is
+   part of how the site looks rather than a courtesy to a setting, so a reader
+   whose machine prefers light still arrives here in dark and switches only if
+   they want to. To follow the system instead, add a
+   `@media (prefers-color-scheme: light)` block wrapping this same rule. */
+:root[data-theme='light'] {
+	color-scheme: light;
 
-:root[data-theme='dark'] {
-	color-scheme: dark;
-
-	--paper: #0f0f11;
-	--paper-sunk: #17171a;
-	--ink: #f0f0ec;
-	--ink-2: #a3a3ab;
-	--ink-3: #6e6e76;
-	--rule: #27272b;
-	--rule-strong: #f0f0ec;
-	--accent: #ff5c3d;
-	--accent-ink: #0f0f11;
-	--accent-sunk: #2a1611;
+	--paper: #fbfbf9; /* warm off-white, not pure white */
+	--paper-sunk: #f2f2ee;
+	--ink: #141416;
+	--ink-2: #55555c;
+	--ink-3: #77777f;
+	--rule: #e0e0da;
+	--rule-strong: #141416;
+	--accent: #c2360f;
+	--accent-ink: #ffffff;
+	--accent-sunk: #f8ece8;
 }

@@ -11,7 +11,8 @@
 	/* Force the light palette regardless of the reader's theme; a dark page
 	   prints as a solid block of toner. */
 	:root,
-	:root[data-theme='dark'] {
+	:root[data-theme='dark'],
+	:root[data-theme='light'] {
 		--paper: #ffffff;
 		--paper-sunk: #ffffff;
 		--ink: #000000;

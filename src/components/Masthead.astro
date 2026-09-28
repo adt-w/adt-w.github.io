@@ -52,9 +52,12 @@ const onResume = isCurrent(Astro.url.pathname, '/resume');
 				Resume
 			</a>
 
+			{/* Dark is the default, so this button turns the light scheme on.
+			    aria-pressed carries that state; the label stays constant so a
+			    screen reader announces one control, not a changing one. */}
 			<button class="theme-toggle" type="button" data-theme-toggle aria-pressed="false">
 				<span class="theme-toggle__swatch" aria-hidden="true"></span>
-				<span class="visually-hidden">Toggle dark theme</span>
+				<span class="visually-hidden">Light theme</span>
 			</button>
 		</div>
 	</div>
@@ -217,16 +220,21 @@ const onResume = isCurrent(Astro.url.pathname, '/resume');
 	 * BaseLayout before first paint; this only handles user clicks.
 	 */
 	const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+	const meta = document.querySelector<HTMLMetaElement>('[data-theme-color]');
 	const root = document.documentElement;
 
+	/** Browser chrome colours, matching --paper in each scheme. */
+	const CHROME = { dark: '#111113', light: '#fbfbf9' } as const;
+
+	/** Dark unless a choice has been made; the system preference is not read. */
 	function currentTheme(): 'light' | 'dark' {
-		const explicit = root.dataset.theme;
-		if (explicit === 'light' || explicit === 'dark') return explicit;
-		return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+		return root.dataset.theme === 'light' ? 'light' : 'dark';
 	}
 
 	function sync() {
-		button?.setAttribute('aria-pressed', String(currentTheme() === 'dark'));
+		const theme = currentTheme();
+		button?.setAttribute('aria-pressed', String(theme === 'light'));
+		meta?.setAttribute('content', CHROME[theme]);
 	}
 
 	button?.addEventListener('click', () => {

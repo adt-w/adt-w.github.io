@@ -35,17 +35,19 @@ const { title, description } = Astro.props;
 		<meta property="og:description" content={description} />
 		<meta name="twitter:card" content="summary" />
 
-		{/* Matches the browser chrome to the page ground in both themes. */}
-		<meta name="theme-color" content="#fbfbf9" media="(prefers-color-scheme: light)" />
-		<meta name="theme-color" content="#0f0f11" media="(prefers-color-scheme: dark)" />
+		{/* Matches the browser chrome to the page ground. Dark is the default,
+		    so it is the value shipped; the toggle rewrites it when a reader
+		    switches to light. */}
+		<meta name="theme-color" content="#111113" data-theme-color />
 
 		{/* Emits @font-face rules, the --font-* variables and preload links.
 		    Self-hosted and subsetted — no third-party request at runtime. */}
 		<Font cssVariable="--font-sans" preload />
 		<Font cssVariable="--font-mono" preload />
 
-		{/* Runs before first paint so a saved dark choice never flashes light.
-		    Inline and synchronous on purpose: deferring it is the flash. */}
+		{/* Runs before first paint so a saved light choice never flashes dark.
+		    Inline and synchronous on purpose: deferring it is the flash.
+		    With nothing saved the page stays on its default dark scheme. */}
 		<script is:inline>
 			try {
 				const saved = localStorage.getItem('theme');
@@ -53,7 +55,7 @@ const { title, description } = Astro.props;
 					document.documentElement.dataset.theme = saved;
 				}
 			} catch {
-				/* Storage blocked — fall through to the system preference. */
+				/* Storage blocked — the default scheme stands. */
 			}
 		</script>
 
