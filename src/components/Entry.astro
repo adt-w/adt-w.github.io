@@ -67,8 +67,10 @@ const hasFoot = Astro.slots.has('foot');
 		letter-spacing: var(--tr-tight);
 	}
 
+	/* One level below a section title, not equal to it: a featured entry is
+	   the child of its section and should read as one. */
 	.entry__title--lead {
-		font-size: var(--fs-xl);
+		font-size: var(--fs-lead);
 	}
 
 	/* Bound to the title: a subtitle that drifts reads as a separate remark. */
