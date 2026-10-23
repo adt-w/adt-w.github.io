@@ -103,7 +103,15 @@
 	--tr-mono: 0.02em;
 	--tr-label: 0.12em; /* uppercase mono labels */
 
-	/* ── Weight ────────────────────────────────────────────────────────────*/
+	/* ── Weight ────────────────────────────────────────────────────────────
+	   Headings take their weight from --fw-heading, which differs by scheme.
+	   Light type on a dark ground looks heavier than the same weight set dark
+	   on light, because the bright strokes bleed into the dark around them, and
+	   the effect grows with size. The font is variable (400-700), so the dark
+	   scheme steps down to 460 and the headings read as the same weight in both
+	   rather than as the same number. Body text is left alone: at reading sizes
+	   the difference is too small to be worth a second value. */
+	--fw-heading: 460;
 	--fw-regular: 400;
 	--fw-medium: 500;
 	--fw-semibold: 600;
@@ -209,4 +217,7 @@
 	--accent: #c2360f;
 	--accent-ink: #ffffff;
 	--accent-sunk: #f8ece8;
+
+	/* Dark-on-light needs no compensation. */
+	--fw-heading: 500;
 }
