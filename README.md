@@ -131,6 +131,14 @@ and the rule it enforces is that the distance inside a thing is always smaller
 than the distance around it: at most 24px within an entry against 64px between
 entries.
 
+Headings are a four-step fluid scale (`display`, `xl`, `lead`, `lg`), each defined
+by its size at 360px and at 1440px so they move together, with every step at least
+1.2x the next at any width. Tracking and leading are set per step, tightening as
+type grows, and the dark scheme takes a lighter heading weight (460 against 500)
+because light-on-dark type looks heavier at the same weight. Running text is held
+to about 70 characters a line with an `em`-based measure, so a 13px note and an 18px
+lead get the same line length rather than the same pixel width.
+
 The only entrance effect is a scroll reveal: anything marked `data-reveal`
 fades up the first time it enters the viewport (`ScrollReveal.astro`). It is
 skipped entirely for readers who prefer reduced motion, and content is only

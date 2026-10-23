@@ -162,9 +162,19 @@
 	   built from this two-column relationship, so it lives here. */
 	--col-label: clamp(5rem, 3rem + 9vw, 11.5rem);
 
-	/* Comfortable reading measures — roughly 60 and 75 characters. */
+	/* Measure: the width of a block of running text.
+
+	   --measure-wide was 46rem, which put 96-99 characters on a line at body
+	   size (measured in the browser). Comfortable reading sits at roughly
+	   45-75, because past that the eye loses its place finding the start of
+	   the next line.
+
+	   It is now in em, not rem. An em-based max-width is resolved against the
+	   font size of the element that uses it, so the same token gives a 13px
+	   note and an 18px lead the same number of characters per line instead of
+	   the same number of pixels. 33em is about 70 characters in Archivo. */
 	--measure: 34rem;
-	--measure-wide: 46rem;
+	--measure-wide: 33em;
 
 	/* Height of the sticky masthead. Declared at root because base.css uses
 	   it as the scroll-padding offset for in-page anchors, and a value set
