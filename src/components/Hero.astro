@@ -59,6 +59,9 @@ import { site, summary, discipline } from '../data/site';
 		padding-block-start: var(--space-related);
 		border-block-start: var(--rule-heavy) solid var(--rule-strong);
 		color: var(--ink);
+		/* Labels are set solid (line-height 1), which is right for a single
+		   line and cramped the moment it wraps, as this one does on a phone. */
+		line-height: var(--lh-snug);
 	}
 
 	.hero__row {

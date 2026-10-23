@@ -72,13 +72,32 @@
 	--fs-display: clamp(2.75rem, 1rem + 8.4vw, 7rem); /* masthead only */
 
 	/* ── Line height & tracking ────────────────────────────────────────────
-	   Large type gets tighter leading and negative tracking; small mono type
-	   gets opened up. Both are what stop web type looking like a default. */
-	--lh-display: 0.92;
-	--lh-tight: 1.12;
+	   Both are set per heading level rather than once for all of them. At
+	   display size the default letter gaps look loose, because the eye reads
+	   spacing against the size of the glyph, so tracking tightens as type
+	   grows. Leading does the same: a 112px name wants lines almost touching,
+	   while a 22px title that wraps needs room to breathe. One shared value
+	   is right for at most one of them, and is what stops headings looking
+	   like defaults.
+
+	       level     tracking   leading
+	       display   -0.040em   0.94
+	       xl        -0.030em   1.05
+	       lead      -0.025em   1.10
+	       lg        -0.020em   1.18
+
+	   Mono type is never tightened: it is spaced on a fixed grid by design. */
+	--lh-display: 0.94;
+	--lh-xl: 1.05;
+	--lh-lead: 1.1;
+	--lh-lg: 1.18;
+	--lh-tight: 1.12; /* fallback for headings with no level of their own */
 	--lh-snug: 1.35;
 	--lh-body: 1.6;
-	--tr-display: -0.035em;
+	--tr-display: -0.04em;
+	--tr-xl: -0.03em;
+	--tr-lead: -0.025em;
+	--tr-lg: -0.02em;
 	--tr-tight: -0.02em;
 	--tr-normal: 0;
 	--tr-mono: 0.02em;
