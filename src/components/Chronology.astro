@@ -199,6 +199,10 @@ const TYPE_LABEL: Record<EventType, string> = {
 		display: none;
 	}
 
+	/* The year is the largest text in this section and the thing the eye uses
+	   to find its place, so it should not also be the dimmest. It was set at
+	   the muted label colour, which put a 30px heading below the 16px titles
+	   it introduces. */
 	.chrono__year-label {
 		font-family: var(--font-mono);
 		font-size: var(--fs-lg);
@@ -206,7 +210,16 @@ const TYPE_LABEL: Record<EventType, string> = {
 		line-height: 1;
 		letter-spacing: var(--tr-tight);
 		font-variant-numeric: tabular-nums;
-		color: var(--ink-3);
+		color: var(--ink-2);
+
+		/* Stays in view while its rows scroll past, then hands over to the next
+		   year, so a long group never leaves a reader wondering which year they
+		   are in. A grid item stretches to its row by default, which would leave
+		   a sticky element nowhere to travel, hence align-self. The offset
+		   clears the masthead and keeps the same gap used above entries. */
+		align-self: start;
+		position: sticky;
+		top: calc(var(--masthead-h) + var(--space-group));
 	}
 
 	.chrono__entry[hidden] {
@@ -399,6 +412,12 @@ const TYPE_LABEL: Record<EventType, string> = {
 		.chrono__year {
 			grid-template-columns: 1fr;
 			gap: var(--s-3);
+		}
+
+		/* Single column: the label has its own row above the entries, so there
+		   is nothing for it to travel alongside. */
+		.chrono__year-label {
+			position: static;
 		}
 
 		/* One column: date, then entry, then type, each on its own line. The
