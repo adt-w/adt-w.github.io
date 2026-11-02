@@ -34,9 +34,12 @@
 	   Lifted anyway, because a hairline this dark disappears on many screens. */
 	--rule: #33343a; /* hairline dividers between rows */
 	--rule-strong: #ededea; /* heavier rules that open a section */
-	--accent: #ff6a4d; /* vermillion, lifted to carry on a dark ground */
-	--accent-ink: #111113; /* text on the rare accent fill */
-	--accent-sunk: #2b1712; /* accent tint */
+	/* Teal, replacing the orange. Cleared against both the page ground and the
+	   hovered surface at 8.8:1 or better. Lifted rather than saturated so it
+	   carries on a dark ground without glowing. */
+	--accent: #30cfa7;
+	--accent-ink: #111113; /* text on the rare accent fill, 9.5:1 */
+	--accent-sunk: #0f2924; /* accent tint */
 
 	/* ── Type families ─────────────────────────────────────────────────────
 	   Two families doing two jobs. The grotesque (Archivo) carries content;
@@ -228,9 +231,10 @@
 	--ink-3: #6e6e76;
 	--rule: #d8d8d2;
 	--rule-strong: #141416;
-	--accent: #c2360f;
+	/* Deepened for light ground: 5.3:1 or better on the page and hovered surfaces. */
+	--accent: #097157;
 	--accent-ink: #ffffff;
-	--accent-sunk: #f8ece8;
+	--accent-sunk: #e3f2ed;
 
 	/* Dark-on-light needs no compensation. */
 	--fw-heading: 500;
