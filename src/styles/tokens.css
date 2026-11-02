@@ -61,15 +61,19 @@
 	--fs-md: 1.125rem; /* 18px — lead paragraphs */
 	/* Heading levels. Each is defined by its size at 360px and at 1440px and
 	   interpolated between, so all of them move together and the step from one
-	   level to the next never collapses. The smallest step is ~1.2x, which is
-	   enough that a reader never has to ask which of two headings is the parent.
-	       xl    section titles       34px -> 48px
-	       lead  featured entries     27px -> 40px
-	       lg    other entry titles   22px -> 30px */
-	--fs-lg: clamp(1.375rem, 1.2083rem + 0.7407vw, 1.875rem); /* entry titles */
-	--fs-lead: clamp(1.6875rem, 1.4167rem + 1.2037vw, 2.5rem); /* featured entry titles */
-	--fs-xl: clamp(2.125rem, 1.8333rem + 1.2963vw, 3rem); /* section titles */
-	--fs-display: clamp(2.75rem, 1rem + 8.4vw, 7rem); /* masthead only */
+	   level to the next never collapses. Every step is at least 1.2x the next,
+	   which is enough that a reader never has to ask which of two headings is
+	   the parent. The display level is derived the same way as the others; it
+	   used to be a free-standing clamp that nothing tied to the rest.
+	       display  the name              52px -> 132px
+	       xl       section titles        40px -> 60px
+	       lead     featured entries      32px -> 48px
+	       lg       other entry titles,
+	                years, figures        26px -> 36px */
+	--fs-lg: clamp(1.625rem, 1.4167rem + 0.9259vw, 2.25rem); /* entry titles, year labels, figures */
+	--fs-lead: clamp(2rem, 1.6667rem + 1.4815vw, 3rem); /* featured entry titles */
+	--fs-xl: clamp(2.5rem, 2.0833rem + 1.8519vw, 3.75rem); /* section titles */
+	--fs-display: clamp(3.25rem, 1.5833rem + 7.4074vw, 8.25rem); /* the name, hero only */
 
 	/* ── Line height & tracking ────────────────────────────────────────────
 	   Both are set per heading level rather than once for all of them. At
